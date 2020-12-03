@@ -1,6 +1,6 @@
 # Polkadot Mempool Explorer
 
-Mempool Explorer allow users to monitor pending transactions on [https://polkadot.network/](Polkadot). 
+Mempool Explorer allow users to monitor pending transactions on [Polkadot](https://polkadot.network/). 
 
 ## Environment setup
 
