@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  explorer:
+    image: polkadot-mempool-explorer
+    networks:
+      - polkadot-net
+    environment:
+      PORT: 8084
+    ports:
+      - 8084:8084
+    command: npm run start
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+networks:
+  polkadot-net:
+  
