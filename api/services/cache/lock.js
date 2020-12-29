@@ -13,7 +13,7 @@ module.exports = () => {
   eventEmitter.setMaxListeners(0);
 
   return {
-    acquire: key => (
+    acquire: (key) => (
       // eslint-disable-next-line consistent-return
       new Promise((resolve) => {
         // If nobody has the lock, take it and resolve immediately

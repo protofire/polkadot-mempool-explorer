@@ -1,5 +1,6 @@
+const TRACK_EXTRINSIC_METHOD = 'author_trackExtrinsic';
 const customMethods = {
-  author_trackExtrinsic: {
+  [TRACK_EXTRINSIC_METHOD]: {
     rpc: {
       author: {
         trackExtrinsic: {
@@ -8,7 +9,7 @@ const customMethods = {
           pubsub: [
             'extrinsicUpdate2',
             'trackExtrinsic',
-            'untrackExtrinsic'
+            'untrackExtrinsic',
           ],
           params: [
             {
@@ -18,8 +19,8 @@ const customMethods = {
           ],
         },
       },
-    }  
-  }
+    },
+  },
 };
 const customMethodKeys = Object.keys(customMethods);
 
@@ -27,6 +28,7 @@ const customMethodKeys = Object.keys(customMethods);
  * Expose Custom RPC Methods
  */
 module.exports = {
+  TRACK_EXTRINSIC_METHOD,
   customMethods,
-  customMethodKeys
+  customMethodKeys,
 };

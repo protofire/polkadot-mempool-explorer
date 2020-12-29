@@ -23,7 +23,7 @@ app.use(API_BASE_PATH, routes);
  */
 const start = () => {
   PolkadotService.watchPendingExtrinsics();
-  
+
   http.createServer(app).listen(serverPort, () => {
     logger.info(`App listening on port http://localhost:${serverPort}/`);
   });

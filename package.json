@@ -1,17 +1,19 @@
 {
   "name": "polkadot-mempool-explorer",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
+    "start:dev": "docker-compose up -d",
+    "down": "docker-compose down -v --rmi=local  --remove-orphans",
+    "restart": "npm run api:restart && npm run web:restart",
     "logs": "docker-compose logs --tail=200 -f",
     "web:rebuild": "docker-compose rm -s -v -f web_explorer && docker-compose up -d --build web_explorer",
     "api:rebuild": "docker-compose rm -s -v -f api_explorer && docker-compose up -d --build api_explorer",
     "web:restart": "docker-compose stop web_explorer && docker-compose up -d web_explorer",
     "api:restart": "docker-compose stop api_explorer && docker-compose up -d api_explorer",
-    "start:dev": "npm run api:rebuild && npm run web:rebuild",
     "web:logs": "npm run logs -- web_explorer",
     "api:logs": "npm run logs -- api_explorer",
     "polkadot-node:logs": "npm run logs -- polkadot_local_node",
-    "restart": "npm run api:restart && npm run web:restart"
+    "polkadot-westend:logs": "npm run logs -- polkadot_westend_node",
+    "polkadot-main:logs": "npm run logs -- polkadot_main_node"
   }
 }
