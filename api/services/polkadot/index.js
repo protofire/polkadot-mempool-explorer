@@ -6,13 +6,17 @@ const {
   DEFAULT_NETWORK,
   LIVE_NETWORKS,
   TEST_NETWORKS,
-  LOCAL_NETWORKS
+  LOCAL_NETWORKS,
 } = require('../../constants/networks');
 const logger = require('../../logger');
-const { customMethods, customMethodKeys } = require('./custom-rpc-methods');
+const {
+  TRACK_EXTRINSIC_METHOD,
+  customMethods,
+  customMethodKeys,
+} = require('./custom-rpc-methods');
 const CacheService = require('../cache');
 
-let connections = {};
+const connections = {};
 
 class PolkadotService {
   static getNetworks() {
@@ -22,48 +26,108 @@ class PolkadotService {
       local: Object.values(LOCAL_NETWORKS),
     };
   }
-  
+
   /**
    * Connect to Polkadot WebSocket RPC server
-   * @param {string} endpoint 
+   * @param {string} endpoint
    */
   static async connect(endpoint) {
     // Store all connection in memory.
     if (!connections[endpoint]) {
-      const wsProvider = new WsProvider('ws://polkadot_local_node:9944' || DEFAULT_NETWORK.url);
+      const wsProvider = new WsProvider('ws://polkadot_main_node:9944' || DEFAULT_NETWORK.url);
       let options = { provider: wsProvider };
       let api = await ApiPromise.create(options);
-      
+
       const { methods } = await api.rpc.rpc.methods();
-      
+
       customMethodKeys.forEach((methodKey) => {
         if (methods.includes(methodKey)) {
-          options = Object.assign({}, options, customMethods[methodKey]);
+          options = { ...options, ...customMethods[methodKey] };
         }
       });
-      
+
       // If options contains custom RPC methods.
       if (options.rpc) {
         api = await ApiPromise.create(options);
       }
-      
+
       connections[endpoint] = { api, wsProvider, networkId: 'local' };
     }
-    
+
     return connections[endpoint];
   }
-  
-  static trackExtrinsic(hash, from, nonce, networkId) {
-    
-    
-    // await api.rpc.author.trackExtrinsic(extrinsics[0].hash, (result) => {
-          //   console.log(`Current status is: `, result);
-          // });
+
+  static async trackExtrinsic(api, hash, from, nonce, networkId) {
+    const extrinsic = await CacheService.getExtrinsic(hash, from, nonce, networkId);
+    const IsTracked = extrinsic ? extrinsic.tracked : false;
+
+    if (!IsTracked) {
+      await CacheService.upsertExtrinsic({
+        hash, from, nonce, networkId, tracked: true,
+      });
+
+      const unsub = await api.rpc.author.trackExtrinsic(hash, async (extrinsicStatus) => {
+        const {
+          isInBlock, isFinalityTimeout, isFinalized, isDropped, isInvalid,
+        } = extrinsicStatus;
+        const data = {
+          hash,
+          from,
+          nonce,
+          networkId,
+          finalized: isFinalized,
+          success: !isInvalid, // The transaction is valid in the current state.
+          dropped: isDropped, // The transaction has been dropped from the pool,
+        };
+
+        // The transaction has been included in block
+        if (isInBlock) {
+          const { number: inBlockNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asInBlock);
+
+          data.block = {
+            number: inBlockNumber.toString(),
+            hash: extrinsicStatus.asInBlock.toString(),
+          };
+        }
+
+        // The transaction has been finalized
+        if (isFinalized) {
+          const { number: finalizedNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalized);
+
+          data.block = {
+            number: finalizedNumber.toString(),
+            hash: extrinsicStatus.asFinalized.toString(),
+          };
+
+          unsub();
+        }
+
+        // Maximum number of finality has been reached, subscribe again.
+        if (isFinalityTimeout) {
+          const { number: finalityTimeoutNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalityTimeout);
+
+          data.block = {
+            number: finalityTimeoutNumber.toString(),
+            hash: extrinsicStatus.asFinalityTimeout.toString(),
+          };
+
+          unsub();
+
+          // Start to track transaction life cycle again.
+          PolkadotService.trackExtrinsic(api, hash, from, nonce, networkId);
+        }
+
+        data.updateAt = await api.query.timestamp.now();
+
+        // Update extrinsic state
+        CacheService.upsertExtrinsic(data);
+      });
+    }
   }
-  
+
   /**
-   * 
-   * @param {*} endpoint 
+   *
+   * @param {*} endpoint
    */
   static async watchPendingExtrinsics(endpoint) {
     const { api, networkId } = await PolkadotService.connect(endpoint);
@@ -75,8 +139,8 @@ class PolkadotService {
           const timestamp = await api.query.timestamp.now();
 
           logger.info(`${extrinsics.length} pending extrinsics in the pool.`);
-          
-          extrinsics.forEach(extrinsic => {
+
+          extrinsics.forEach((extrinsic) => {
             const hash = extrinsic.hash.toString();
             const from = extrinsic.signer.toString();
             const nonce = parseInt(extrinsic.nonce.toString(), 10);
@@ -84,6 +148,9 @@ class PolkadotService {
             let to = null;
             let value = 0;
             let era = { isMortal: false };
+
+            // Start to track transaction life cycle
+            PolkadotService.trackExtrinsic(api, hash, from, nonce, networkId);
 
             extrinsic.args.forEach((arg) => {
               switch (arg.toRawType()) {
@@ -97,7 +164,7 @@ class PolkadotService {
                   break;
               }
             });
-            
+
             if (extrinsic.era.isMortalEra) {
               const { period, phase } = extrinsic.era.asMortalEra;
               era = {
@@ -126,12 +193,11 @@ class PolkadotService {
               updateAt: timestamp,
             });
           });
-          
+
           try {
             // Save extrinsics
-            await Promise.all(rows.map(row => CacheService.upsertExtrinsic(row)));
+            await Promise.all(rows.map((row) => CacheService.upsertExtrinsic(row)));
           } catch (error) {
-            console.error(error);
             logger.error('Error trying to store extrinsis', error);
           }
         } else {
@@ -139,36 +205,8 @@ class PolkadotService {
         }
       });
     }, 2000);
-    
-    // Subscribe to system events via storage
-    // api.query.system.events((events) => {
-    //   console.log(`\nReceived ${events.length} events:`);
 
-    //   // Loop through the Vec<EventRecord>
-    //   events.forEach((record) => {
-    //     // Extract the phase, event and the event types
-    //     const { event, phase, topics } = record;
-        
-    //     if (event.section !== 'system') {
-    //       const types = event.typeDef;
-    //       console.log('phase =======>', phase.toHuman());
-    //       console.log('event =======>', event.toHuman(true));  
-    //     }
-        
-        
-        
-    //     // Show what we are busy with
-    //     // console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
-    //     // console.log(`\t\t${event.meta.documentation.toString()}`);
-
-    //     // Loop through each of the parameters, displaying the type and data
-    //     // event.data.forEach((data, index) => {
-    //     //   console.log('data =======>', data.toHuman(true));
-    //     //   // console.log(`DATA ========> ${types[index].type}:`, data.toHuman());
-    //     // });
-    //   });
-    // });
-    
+    // TODO: LISTEN TO BLOCK EVENTS
     // await api.rpc.chain.subscribeNewHeads(async (header) => {
     //   const rows = {};
     //   const blockHash = await api.rpc.chain.getBlockHash(header.number);
@@ -181,7 +219,7 @@ class PolkadotService {
     //   console.log(`Block number: `, header.number.toString());
     //   console.log(`Block hash: `, blockHash.toString());
     //   // console.log(events, pendingExtrinsicHashs);
-      
+
     //   // map between the extrinsics and events
     //   block.extrinsics.forEach((extrinsic, index) => {
     //     if (!systemSection.includes(extrinsic.method.sectionName)) {
@@ -193,12 +231,12 @@ class PolkadotService {
     //           phase.isApplyExtrinsic &&
     //           phase.asApplyExtrinsic.eq(index)
     //         );
-          
+
     //       // console.log('extrinsic =======>', extrinsic.toHuman(true));
     //       console.log('extrinsic events size =======>', extrinsicEvents.length);
     //       console.log('extrinsic block size =======>', blockEvents.length);
     //       // console.log('extrinsic events =======>', extrinsicEvents);
-          
+
     //       extrinsicEvents.forEach((extrinsicEvent) => {
     //         // Extract the phase, event and the event types
     //         const { event, phase } = extrinsicEvent;
@@ -216,21 +254,18 @@ class PolkadotService {
     //         //   // console.log(`DATA ========> ${types[index].type}:`, data.toHuman());
     //         // });
     //       });
-          
-          
+
     //       // if (pendingExtrinsicHashs.includes(hash)) {
-            
+
     //       // }
-          
-          
-          
+
     //       console.log('extrinsic hash =======>', hash);
     //       // console.log('extrinsic tx hash =====>', extrinsic.hash.toString());
     //       // console.log('extrinsic from =====>', extrinsic.signer.toString());
-          
+
     //       // let to;
     //       // let balance;
-          
+
     //       // extrinsic.args.forEach((arg) => {
     //       //   switch (arg.toRawType()) {
     //       //     case 'AccountId':
@@ -243,7 +278,7 @@ class PolkadotService {
     //       //       break;
     //       //   }
     //       // });
-          
+
     //       // console.log('extrinsic to =====>', to);
     //       // console.log('extrinsic balance =====>', balance);
     //     }

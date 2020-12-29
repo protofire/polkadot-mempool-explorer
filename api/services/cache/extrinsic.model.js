@@ -2,8 +2,8 @@
  * Module dependencies
  */
 
-const isBoolean = val => 'boolean' === typeof val;
- 
+const isBoolean = (val) => typeof val === 'boolean';
+
 /**
  * @class
  */
@@ -11,13 +11,12 @@ class ExtrinsicModel {
   constructor() {
     this.section = '';
     this.method = '';
-    this.index = '';
     this.events = [];
     this.transactionVersion = '';
     this.specVersion = '';
-    this.hash ='';
-    this.from ='';
-    this.to ='';
+    this.hash = '';
+    this.from = '';
+    this.to = '';
     this.isSigned = false;
     this.nonce = 0;
     this.tip = 0.0;
@@ -26,6 +25,7 @@ class ExtrinsicModel {
     this.finalized = false;
     this.success = false;
     this.tracked = false;
+    this.dropped = false;
     this.createAt = 0; // timestamp
     this.updateAt = 0; // timestamp
     this.era = {
@@ -38,11 +38,10 @@ class ExtrinsicModel {
       hash: '',
     };
   }
-  
+
   buildFrom({
     section,
     method,
-    index,
     events,
     transactionVersion,
     specVersion,
@@ -57,6 +56,7 @@ class ExtrinsicModel {
     finalized,
     success,
     tracked,
+    dropped,
     createAt,
     updateAt,
     era,
@@ -64,7 +64,6 @@ class ExtrinsicModel {
   } = {}) {
     this.section = section || this.section;
     this.method = method || this.method;
-    this.index = index || this.index;
     this.events = events || this.events;
     this.transactionVersion = transactionVersion || this.transactionVersion;
     this.specVersion = specVersion || this.specVersion;
@@ -79,10 +78,11 @@ class ExtrinsicModel {
     this.finalized = isBoolean(finalized) ? finalized : this.finalized;
     this.success = isBoolean(success) ? success : this.success;
     this.tracked = isBoolean(tracked) ? tracked : this.tracked;
+    this.dropped = isBoolean(dropped) ? dropped : this.dropped;
     this.createAt = createAt || this.createAt;
     this.updateAt = updateAt || this.updateAt;
-    this.era = Object.assign({}, this.era, era || {});
-    this.block = Object.assign({}, this.block, block || {});
+    this.era = { ...this.era, ...era || {} };
+    this.block = { ...this.block, ...block || {} };
   }
 
   /**
@@ -93,7 +93,6 @@ class ExtrinsicModel {
       block: this.block,
       section: this.section,
       method: this.method,
-      index: this.index,
       events: this.events,
       transactionVersion: this.transactionVersion,
       specVersion: this.specVersion,
@@ -108,6 +107,7 @@ class ExtrinsicModel {
       finalized: this.finalized,
       success: this.success,
       tracked: this.tracked,
+      dropped: this.dropped,
       createAt: this.createAt,
       updateAt: this.updateAt,
       era: this.era,
