@@ -1,48 +1,17 @@
 {
   "name": "polkadot-mempool-explorer",
   "version": "1.0.0",
-  "dependencies": {
-    "@polkadot/api": "^2.9.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "web-vitals": "^0.2.4"
-  },
-  "devDependencies": {
-    "@polkadot/types": "^2.9.1",
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.4.0",
-    "@types/jest": "^26.0.16",
-    "@types/node": "^12.19.8",
-    "@types/react": "^16.14.2",
-    "@types/react-dom": "^16.9.10",
-    "typescript": "^4.1.2"
-  },
+  "private": true,
   "scripts": {
-    "lint": "eslint ./src",
-    "prebuild": "rm -rf dist",
-    "start": "NODE_ENV=development react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
-    "test": "NODE_ENV=test react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "logs": "docker-compose logs --tail=200 -f",
+    "web:rebuild": "docker-compose rm -s -v -f web_explorer && docker-compose up -d --build web_explorer",
+    "api:rebuild": "docker-compose rm -s -v -f api_explorer && docker-compose up -d --build api_explorer",
+    "web:restart": "docker-compose stop web_explorer && docker-compose up -d web_explorer",
+    "api:restart": "docker-compose stop api_explorer && docker-compose up -d api_explorer",
+    "start:dev": "npm run api:rebuild && npm run web:rebuild",
+    "web:logs": "npm run logs -- web_explorer",
+    "api:logs": "npm run logs -- api_explorer",
+    "polkadot-node:logs": "npm run logs -- polkadot_local_node",
+    "restart": "npm run api:restart && npm run web:restart"
   }
 }

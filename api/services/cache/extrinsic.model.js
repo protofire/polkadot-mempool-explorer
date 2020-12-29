@@ -1,0 +1,121 @@
+/**
+ * Module dependencies
+ */
+
+const isBoolean = val => 'boolean' === typeof val;
+ 
+/**
+ * @class
+ */
+class ExtrinsicModel {
+  constructor() {
+    this.section = '';
+    this.method = '';
+    this.index = '';
+    this.events = [];
+    this.transactionVersion = '';
+    this.specVersion = '';
+    this.hash ='';
+    this.from ='';
+    this.to ='';
+    this.isSigned = false;
+    this.nonce = 0;
+    this.tip = 0.0;
+    this.signature = null;
+    this.value = 0.0;
+    this.finalized = false;
+    this.success = false;
+    this.tracked = false;
+    this.createAt = 0; // timestamp
+    this.updateAt = 0; // timestamp
+    this.era = {
+      isMortal: false,
+      period: null,
+      phase: null,
+    };
+    this.block = {
+      number: 0,
+      hash: '',
+    };
+  }
+  
+  buildFrom({
+    section,
+    method,
+    index,
+    events,
+    transactionVersion,
+    specVersion,
+    hash,
+    from,
+    to,
+    isSigned,
+    nonce,
+    tip,
+    signature,
+    value,
+    finalized,
+    success,
+    tracked,
+    createAt,
+    updateAt,
+    era,
+    block,
+  } = {}) {
+    this.section = section || this.section;
+    this.method = method || this.method;
+    this.index = index || this.index;
+    this.events = events || this.events;
+    this.transactionVersion = transactionVersion || this.transactionVersion;
+    this.specVersion = specVersion || this.specVersion;
+    this.hash = hash || this.hash;
+    this.from = from || this.from;
+    this.to = to || this.to;
+    this.isSigned = isBoolean(isSigned) ? isSigned : this.isSigned;
+    this.nonce = nonce || this.nonce;
+    this.tip = tip || this.tip;
+    this.signature = signature || this.signature;
+    this.value = value || this.value;
+    this.finalized = isBoolean(finalized) ? finalized : this.finalized;
+    this.success = isBoolean(success) ? success : this.success;
+    this.tracked = isBoolean(tracked) ? tracked : this.tracked;
+    this.createAt = createAt || this.createAt;
+    this.updateAt = updateAt || this.updateAt;
+    this.era = Object.assign({}, this.era, era || {});
+    this.block = Object.assign({}, this.block, block || {});
+  }
+
+  /**
+   * Returns an immutable object
+   */
+  toJSON() {
+    return Object.freeze({
+      block: this.block,
+      section: this.section,
+      method: this.method,
+      index: this.index,
+      events: this.events,
+      transactionVersion: this.transactionVersion,
+      specVersion: this.specVersion,
+      hash: this.hash,
+      from: this.from,
+      to: this.to,
+      isSigned: this.isSigned,
+      nonce: this.nonce,
+      tip: this.tip,
+      signature: this.signature,
+      value: this.value,
+      finalized: this.finalized,
+      success: this.success,
+      tracked: this.tracked,
+      createAt: this.createAt,
+      updateAt: this.updateAt,
+      era: this.era,
+    });
+  }
+}
+
+/**
+ * Expose ExtrinsicModel
+ */
+module.exports = ExtrinsicModel;

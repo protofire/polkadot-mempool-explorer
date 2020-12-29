@@ -1,0 +1,14 @@
+{
+  "verbose": true,
+  "exitcrash": true,
+  "delay": "1000",
+  "ext": "js json",
+  "ignore": [
+    ".vscode",
+    ".git",
+    "node_modules",
+    "test/**",
+    "scripts/**",
+    "*.log"
+  ]
+}
