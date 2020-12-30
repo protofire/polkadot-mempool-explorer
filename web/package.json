@@ -48,6 +48,17 @@
     "start": "NODE_ENV=development react-scripts start",
     "test": "NODE_ENV=test react-scripts test"
   },
+  "lint-staged": {
+    "src/**/*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint-staged --allow-empty"
+    }
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
