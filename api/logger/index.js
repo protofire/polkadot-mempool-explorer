@@ -2,12 +2,11 @@
  * Module dependencies
  */
 const pino = require('pino');
-
-const level = process.env.NODE_ENV === 'production' ? 'info' : 'debug';
+const { LOG_NAME, LOG_LEVEL } = require('../env');
 
 const logger = pino({
-  name: 'mempool-explorer-service',
-  level,
+  name: LOG_NAME,
+  level: LOG_LEVEL,
   prettyPrint: {
     colorize: true,
     translateTime: `UTC:yyyy-mm-dd'T'HH:MM:ss:l'Z'`,
