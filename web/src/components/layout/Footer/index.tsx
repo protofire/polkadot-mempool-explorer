@@ -1,9 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import { SettingsIcon } from 'components/icons/SettingsIcon'
-import { HashLink } from 'react-router-hash-link'
-
 // eslint-disable-next-line no-restricted-imports
 import { version as appVersion } from '../../../../package.json'
 
@@ -62,10 +59,6 @@ const ExternalLink = styled.a`
   ${LinkCSS}
 `
 
-const FooterLinkHash = styled(HashLink)`
-  ${LinkCSS}
-`
-
 const Break = styled.span`
   @media (min-width: ${(props) => props.theme.themeBreakPoints.mdPre}) {
     margin: 0 6px;
@@ -76,37 +69,8 @@ const Break = styled.span`
   }
 `
 
-const IconWrapper = styled.span`
-  cursor: pointer;
-  display: inline-block;
-  height: 12px;
-  margin-left: 6px;
-  position: relative;
-  top: -1px;
-  width: 12px;
-`
-
-const SettingsIconStyled = styled(SettingsIcon)`
-  height: 11px;
-  width: 11px;
-
-  .fill {
-    fill: ${(props) => props.theme.colors.textColor};
-  }
-
-  &:hover {
-    .fill {
-      fill: ${(props) => props.theme.colors.darkerGrey};
-    }
-  }
-`
-
-interface Props {
-  onCookiesBannerShow: () => void
-}
-
-export const Footer: React.FC<Props> = (props) => {
-  const { onCookiesBannerShow, ...restProps } = props
+export const Footer: React.FC = (props) => {
+  const { ...restProps } = props
   const date = new Date()
   const year = date.getFullYear()
   const version = appVersion || 'Invalid Version Number'
@@ -121,20 +85,15 @@ export const Footer: React.FC<Props> = (props) => {
           <Break className="break" />
         </Item>
         <Item>
-          <FooterLinkHash to="/terms-and-conditions#mainTitle">
-            Terms &amp; Conditions
-          </FooterLinkHash>
+          <ExternalLink href="/terms-and-conditions#mainTitle">Terms &amp; Conditions</ExternalLink>
           <Break className="break" />
         </Item>
         <Item>
-          <FooterLinkHash to="/privacy-policy#mainTitle">Privacy Policy</FooterLinkHash>
+          <ExternalLink href="/privacy-policy#mainTitle">Privacy Policy</ExternalLink>
           <Break className="break" />
         </Item>
         <Item>
-          <FooterLinkHash to="/cookie-policy#mainTitle">Cookie Policy</FooterLinkHash>
-          <IconWrapper onClick={onCookiesBannerShow}>
-            <SettingsIconStyled />
-          </IconWrapper>
+          <ExternalLink href="/cookie-policy#mainTitle">Cookie Policy</ExternalLink>
           <Break className="break" />
         </Item>
         <Item>
