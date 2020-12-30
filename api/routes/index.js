@@ -8,9 +8,14 @@ const hpp = require('hpp');
 const helmet = require('helmet');
 const ping = require('./ping');
 const explorer = require('./explorer');
+const { NotFoundErrorResponse } = require('../http-errors');
 
 const router = express.Router();
+const notFound = new NotFoundErrorResponse();
 
+/**
+ * Server middlewares
+ */
 router.use([
   compression(),
   helmet({
@@ -29,6 +34,7 @@ router.use([
  */
 router.use('/', ping);
 router.use('/mempool-explorer', explorer);
+router.use('/*', (req, res) => res.send(notFound.code, notFound));
 
 /**
  * Espose API Router

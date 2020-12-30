@@ -5,10 +5,7 @@ const LRU = require('lru-cache');
 const localLock = require('./lock');
 const logger = require('../../logger');
 const ExtrinsicModel = require('./extrinsic.model');
-
-const CACHE_MAX_SIZE = process.env.CACHE_MAX_SIZE || 10000; // Default 10000 items
-const CACHE_MAX_AGE = process.env.CACHE_MAX_AGE || 3600000 * 24; // Default 24 hours
-const NETWORK_MAX_ITEMS = process.env.NETWORK_MAX_ITEMS || 100; // Default 10
+const { CACHE_MAX_AGE, CACHE_MAX_SIZE, NETWORK_MAX_ITEMS } = require('../../env');
 
 /**
  * Init cache on memory
@@ -60,8 +57,8 @@ class CacheService {
       await CacheService.setNetworkExtrinsicKeys(networkId, extrinsicKeys);
 
       return extrinsic;
-    } catch (error) {
-      logger.error('Error trying to upsert extrinsic', error);
+    } catch (err) {
+      logger.error({ err }, 'Error trying to upsert extrinsic');
 
       return null;
     } finally {
@@ -75,10 +72,10 @@ class CacheService {
 
     if (extrinsicKeys.length > 0) {
       const extrinsics = extrinsicKeys.map(
-        extrinsicKey => JSON.parse(lruCache.get(extrinsicKey) || null)
+        (extrinsicKey) => JSON.parse(lruCache.get(extrinsicKey) || null),
       );
 
-      return extrinsics.filter((extrinsic) => extrinsic);
+      return extrinsics.filter((extrinsic) => extrinsic).reverse();
     }
 
     return [];
@@ -93,7 +90,7 @@ class CacheService {
   static async getNetworkExtrinsicKeys(networkId) {
     const networkKey = CacheService.getNetworkKey(networkId);
 
-    return JSON.parse(lruCache.get(networkKey) || null) || [];
+    return (JSON.parse(lruCache.get(networkKey) || null) || []).reverse();
   }
 
   static async setExtrinsic(hash, from, nonce, networkId, data) {

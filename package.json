@@ -12,7 +12,7 @@
     "api:restart": "docker-compose stop api_explorer && docker-compose up -d api_explorer",
     "web:logs": "npm run logs -- web_explorer",
     "api:logs": "npm run logs -- api_explorer",
-    "polkadot-node:logs": "npm run logs -- polkadot_local_node",
+    "polkadot-local:logs": "npm run logs -- polkadot_local_node",
     "polkadot-westend:logs": "npm run logs -- polkadot_westend_node",
     "polkadot-main:logs": "npm run logs -- polkadot_main_node"
   }
