@@ -1,26 +1,22 @@
-const darkGrey = '#5d6d74'
-const darkerGrey = '#445055'
+const borderColor = '#e6e9ed1'
+const darkGrey = '#1e1e1e'
 const error = '#db3a3d'
 const errorDark = '#BC3033'
-const lightGrey = '#d4d5d3'
-const mediumGrey = '#b2b5b2'
-const primary = '#009cb4'
-const primaryDark = '#00879B'
-const textColor = '#5d6d74'
-const whitesmoke1 = '#e8e7e6'
-const whitesmoke2 = '#f3f2f2'
-const whitesmoke3 = '#fafafa'
+const lightGrey = '#fafafa'
+const mediumGrey = '#767676'
+const primary = '#e6007a'
+const primaryDark = '#bf0065'
+const textColor = '#1e1e1e'
 
 const theme = {
   fonts: {
-    defaultSize: '14px',
-    fontFamily: `'Averta', 'Helvetica Neue', 'Arial', 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', '-apple-system', 'BlinkMacSystemFont', sans-serif`,
+    defaultSize: '15px',
+    fontFamily: `'Work Sans', 'Helvetica Neue', 'Arial', 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', '-apple-system', 'BlinkMacSystemFont', sans-serif`,
     fontFamilyCode: `source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace`,
   },
   border: {
-    color: '#eceff1',
-    colorDark: lightGrey,
-    borderRadius: '6px',
+    color: borderColor,
+    borderRadius: '4px',
   },
   buttonPrimary: {
     backgroundColor: primary,
@@ -48,123 +44,58 @@ const theme = {
   },
   cards: {
     backgroundColor: '#fff',
-    borderRadius: '8px ',
-    boxShadow: '0 2px 8px 0 rgba(212, 213, 211, 0.7)',
-    paddingHorizontal: '20px',
-    paddingVertical: '24px',
+    borderRadius: '4px ',
+    boxShadow: '0 0 15px 0 rgba(0, 0, 0, 0.05)',
+    paddingHorizontal: '12px',
+    paddingVertical: '12px',
   },
   colors: {
     darkBlue: '#001428',
     darkGrey: darkGrey,
-    darkerGrey: darkerGrey,
-    darkestGray: '#081728',
     delete: error,
     error: error,
-    holdGreen: '#008c73',
-    lightGreen: '#a1d2ca',
-    lightGrey: lightGrey,
-    lighterGreen: '#b6e2da',
-    mainBodyBackground: whitesmoke2,
+    mainBodyBackground: '#F8F9FA',
     mediumGrey: mediumGrey,
     primary: primary,
     textColor: textColor,
     tomatoRed: error,
     warning: '#ffc05f',
-    whitesmoke1: whitesmoke1,
-    whitesmoke2: whitesmoke2,
-    whitesmoke3: whitesmoke3,
   },
   dropdown: {
     item: {
       backgroundColor: 'transparent',
-      backgroundColorActive: whitesmoke3,
-      backgroundColorHover: whitesmoke3,
-      borderColor: lightGrey,
+      backgroundColorActive: lightGrey,
+      backgroundColorHover: lightGrey,
+      borderColor: borderColor,
       color: textColor,
-      colorActive: darkerGrey,
+      colorActive: textColor,
       height: '40px',
       paddingHorizontal: '12px',
     },
   },
-  form: {
-    disabled: {
-      backgroundColor: '#fff',
-      borderColor: '#E8EAF6',
-      color: '#757575',
-    },
-  },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: primary,
     height: '60px',
   },
   layout: {
-    commonContainerMaxWidth: '600px',
     horizontalPadding: '10px',
-    maxWidth: '100%',
-  },
-  outcomes: {
-    dimensions: '27px',
-  },
-  paddings: {
-    mainPadding: '15px',
-  },
-  pillPrimary: {
-    backgroundColor: '#caf2eb',
-    color: '#348174',
-  },
-  pillOpen: {
-    backgroundColor: whitesmoke1,
-    color: textColor,
+    maxWidth: '1080px',
   },
   textField: {
     backgroundColor: '#fff',
     backgroundColorActive: '#fff',
-    borderColor: mediumGrey,
-    borderColorActive: '#aaa',
-    borderRadius: '4px',
+    borderColor: '#d8d8d8',
+    borderColorActive: '#080808',
+    borderRadius: '2px',
     borderStyle: 'solid',
     borderWidth: '1px',
     color: textColor,
-    colorPlaceholder: mediumGrey,
+    colorPlaceholder: '#a2a2a2',
     errorColor: error,
-    fontSize: '16px',
+    fontSize: '13px',
     fontWeight: '400',
-    height: '36px',
-    paddingHorizontal: '11px',
-  },
-  modalStyle: {
-    content: {
-      backgroundColor: '#fff',
-      borderColor: 'transparent',
-      borderRadius: '8px',
-      bottom: 'auto',
-      boxShadow: '0 2px 8px 0 rgba(212, 213, 211, 0.7)',
-      display: 'flex',
-      flexDirection: 'column',
-      flexGrow: '0',
-      height: 'fit-content',
-      left: 'auto',
-      margin: 'auto 0',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      paddingBottom: '24px',
-      paddingHorizontal: '20px',
-      paddingTop: '24px',
-      position: 'relative',
-      right: 'auto',
-      top: 'auto',
-      width: '600px',
-      zIndex: '123456789',
-    },
-    overlay: {
-      alignItems: 'unset',
-      backgroundColor: 'rgba(255, 255, 255, 0.7)',
-      display: 'flex',
-      justifyContent: 'center',
-      overflow: 'auto',
-      padding: '10px',
-      zIndex: '12345',
-    },
+    height: '26px',
+    paddingHorizontal: '8px',
   },
   themeBreakPoints: {
     lg: '992px',

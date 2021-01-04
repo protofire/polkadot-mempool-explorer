@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { ClearSearch } from 'components/icons/ClearSearch'
-import { Magnifier } from 'components/icons/Magnifier'
 import { Textfield } from 'components/pureStyledComponents/Textfield'
 
 const Wrapper = styled.div`
@@ -25,16 +24,6 @@ const Wrapper = styled.div`
   .dropdown.isOpen {
     background-color: ${(props) => props.theme.colors.primary};
   }
-`
-
-const SearchIconWrapper = styled.label`
-  align-items: center;
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  height: 100%;
-  justify-content: center;
-  width: 35px;
 `
 
 const Input = styled(Textfield)`
@@ -164,9 +153,6 @@ export const SearchField: React.FC<Props> = (props) => {
 
   return (
     <Wrapper {...restProps}>
-      <SearchIconWrapper htmlFor="searchField">
-        <Magnifier />
-      </SearchIconWrapper>
       <Input
         autoComplete="off"
         disabled={disabled}

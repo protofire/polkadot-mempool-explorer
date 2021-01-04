@@ -1,43 +1,43 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-// eslint-disable-next-line no-restricted-imports
-import { version as appVersion } from '../../../../package.json'
+import { Protofire } from 'components/icons/Protofire'
+import { InnerContainer } from 'components/pureStyledComponents/InnerContainer'
 
 const Wrapper = styled.footer`
-  &.siteFooter {
-    align-items: initial;
-    border-radius: 0;
-    display: block;
-    height: auto;
-    margin-top: auto;
-    overflow: visible;
-    padding: 25px 0;
-    width: 100%;
-  }
+  align-items: initial;
+  border-radius: 0;
+  display: block;
+  height: auto;
+  margin-top: auto;
+  overflow: visible;
+  padding: 45px 0 25px;
+  width: 100%;
 `
 
 const Items = styled.ul`
-  &.footerItems {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    margin: 0;
-    padding-bottom: 0;
-    padding-left: ${(props) => props.theme.layout.horizontalPadding};
-    padding-right: ${(props) => props.theme.layout.horizontalPadding};
-    padding-top: 0;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+`
 
-    @media (min-width: ${(props) => props.theme.themeBreakPoints.mdPre}) {
-      flex-direction: row;
-      justify-content: center;
-    }
-  }
+const TextCSS = css`
+  color: ${(props) => props.theme.colors.mediumGrey};
+  font-size: 12px;
+  line-height: 1.2;
+  text-decoration: none;
+`
+
+const Text = styled.span`
+  ${TextCSS}
 `
 
 const Item = styled.li`
-  color: ${(props) => props.theme.colors.textColor};
+  ${TextCSS}
+  align-items: center;
+  display: flex;
 
   &:last-child {
     .break {
@@ -46,74 +46,66 @@ const Item = styled.li`
   }
 `
 
-const LinkCSS = css`
-  color: ${(props) => props.theme.colors.textColor};
-  text-decoration: none;
+const ExternalLink = styled.a`
+  ${TextCSS}
 
   &:hover {
     text-decoration: underline;
   }
 `
 
-const ExternalLink = styled.a`
-  ${LinkCSS}
+const ExternalLinkFlex = styled(ExternalLink)`
+  align-items: center;
+  display: flex;
 `
 
 const Break = styled.span`
-  @media (min-width: ${(props) => props.theme.themeBreakPoints.mdPre}) {
-    margin: 0 6px;
+  margin: 0 6px;
 
-    &:after {
-      content: '|';
-    }
+  &:after {
+    content: '-';
   }
+`
+
+const Logo = styled(Protofire)`
+  margin-left: 6px;
 `
 
 export const Footer: React.FC = (props) => {
   const { ...restProps } = props
   const date = new Date()
   const year = date.getFullYear()
-  const version = appVersion || 'Invalid Version Number'
 
   return (
     <Wrapper className="siteFooter" {...restProps}>
-      <Items className="footerItems">
-        <Item>
-          <ExternalLink href="https://gnosis.io/" rel="noopener noreferrer" target="_blank">
-            {`©${year} Gnosis`}
-          </ExternalLink>
-          <Break className="break" />
-        </Item>
-        <Item>
-          <ExternalLink href="/terms-and-conditions#mainTitle">Terms &amp; Conditions</ExternalLink>
-          <Break className="break" />
-        </Item>
-        <Item>
-          <ExternalLink href="/privacy-policy#mainTitle">Privacy Policy</ExternalLink>
-          <Break className="break" />
-        </Item>
-        <Item>
-          <ExternalLink href="/cookie-policy#mainTitle">Cookie Policy</ExternalLink>
-          <Break className="break" />
-        </Item>
-        <Item>
-          <ExternalLink
-            href="https://docs.gnosis.io/conditionaltokens/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </ExternalLink>
-          <Break className="break" />
-        </Item>
-        <Item>
-          <ExternalLink
-            href="https://github.com/gnosis/conditional-tokens-explorer/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >{`v${version}`}</ExternalLink>
-        </Item>
-      </Items>
+      <InnerContainer>
+        <Items className="footerItems">
+          <Item>
+            <Text>{`Polkadot Mempool Explorer ${year}`}</Text>
+            <Break className="break" />
+          </Item>
+          <Item>
+            <ExternalLinkFlex
+              href="https://protofire.io/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Built by
+              <Logo />
+            </ExternalLinkFlex>
+            <Break className="break" />
+          </Item>
+          <Item>
+            <ExternalLink
+              href="https://github.com/protofire/polkadot-mempool-explorer"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Github
+            </ExternalLink>
+          </Item>
+        </Items>
+      </InnerContainer>
     </Wrapper>
   )
 }

@@ -6,8 +6,8 @@ export const InnerContainer = styled.div`
   flex-grow: 1;
   flex-shrink: 0;
   margin: 0 auto;
-  max-width: 100%;
+  max-width: ${(props) => props.theme.layout.maxWidth};
   padding-left: ${(props) => props.theme.layout.horizontalPadding};
   padding-right: ${(props) => props.theme.layout.horizontalPadding};
-  width: ${(props) => props.theme.layout.maxWidth};
+  width: 100%;
 `
