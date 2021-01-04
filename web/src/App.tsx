@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect, Route, HashRouter as Router, Switch } from 'react-router-dom'
-import { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 
 import { Footer, Header } from 'components/layout'
 import { BaseCard } from 'components/pureStyledComponents/BaseCard'
@@ -15,13 +15,17 @@ import { GlobalStyle } from 'theme/globalStyle'
 
 import 'sanitize.css'
 
+const MainInnerContainer = styled(InnerContainer)`
+  padding-top: 15px;
+`
+
 export const App: React.FC = () => (
   <ThemeProvider theme={theme}>
     <GlobalStyle />
     <MainWrapper>
       <Header />
       <MainScroll>
-        <InnerContainer>
+        <MainInnerContainer>
           <Router>
             <Switch>
               <Route component={Main} exact path="/main" />
@@ -36,7 +40,7 @@ export const App: React.FC = () => (
               </Route>
             </Switch>
           </Router>
-        </InnerContainer>
+        </MainInnerContainer>
         <Footer />
       </MainScroll>
     </MainWrapper>

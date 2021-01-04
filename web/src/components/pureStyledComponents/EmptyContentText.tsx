@@ -5,7 +5,7 @@ export const EmptyContentText = styled.div`
   color: ${(props) => props.theme.colors.textColor};
   display: flex;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   height: 100%;
   justify-content: center;
   line-height: 1.5;

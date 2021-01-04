@@ -20,7 +20,7 @@ export const Pill = styled.div<{ type?: PillTypes }>`
   border-radius: 4px;
   display: inline-flex;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   height: 22px;
   justify-content: center;
   line-height: 1.2;

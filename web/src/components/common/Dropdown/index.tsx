@@ -99,14 +99,14 @@ export const DropdownItemCSS = css<DropdownItemProps>`
   line-height: 1.4;
   min-height: ${(props) => props.theme.dropdown.item.height};
   overflow: hidden;
-  padding: 10px ${(props) => props.theme.dropdown.item.paddingHorizontal};
+  padding: 8px ${(props) => props.theme.dropdown.item.paddingHorizontal};
   text-decoration: none;
   user-select: none;
 
   &.isActive {
     background-color: ${(props) => props.theme.dropdown.item.backgroundColorActive};
     color: ${(props) => props.theme.dropdown.item.colorActive};
-    font-weight: 600;
+    font-weight: 500;
   }
 
   &:first-child {

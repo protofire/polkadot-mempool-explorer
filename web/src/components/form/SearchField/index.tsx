@@ -8,21 +8,18 @@ import { Textfield } from 'components/pureStyledComponents/Textfield'
 
 const Wrapper = styled.div`
   background-color: #fff;
-  border: 1px solid ${(props) => props.theme.colors.mediumGrey};
+  border: 1px solid #f3f3f3;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03);
   border-radius: 4px;
   display: flex;
-  height: 32px;
+  height: 36px;
   max-width: 100%;
-  width: 450px;
+  width: 100%;
 
   .dropdown,
   .dropdownButton {
     flex-shrink: 0;
     height: 100%;
-  }
-
-  .dropdown.isOpen {
-    background-color: ${(props) => props.theme.colors.primary};
   }
 `
 
@@ -36,8 +33,8 @@ const Input = styled(Textfield)`
   font-weight: normal;
   height: 100%;
   overflow: hidden;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 20px;
+  padding-right: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
   z-index: 1;
@@ -87,9 +84,9 @@ const ClearSearchButton = styled.button`
   }
 `
 
-const ClearSearchButtonText = styled.span`
+const DropdownButtonText = styled.span`
   flex-shrink: 0;
-  max-width: calc(100% - 24px);
+  max-width: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -98,28 +95,27 @@ const ClearSearchButtonText = styled.span`
 const ButtonDropdown = styled.button`
   align-items: center;
   background-color: transparent;
-  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
   border-bottom: none;
-  border-left: 1px solid ${(props) => props.theme.colors.mediumGrey};
-  border-right: none;
-  border-top-right-radius: 4px;
+  border-left: none;
+  border-right: 1px solid #e6e9ed;
+  border-top-left-radius: 4px;
   border-top: none;
-  color: ${(props) => props.theme.colors.darkerGrey};
+  color: ${(props) => props.theme.colors.mediumGrey};
   cursor: pointer;
   display: flex;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   height: 100%;
   justify-content: space-between;
   line-height: 1.2;
-  max-width: 170px;
   min-width: 80px;
   outline: none;
-  padding: 0 12px;
+  padding: 0 20px;
 
   .fill {
-    fill: ${(props) => props.theme.colors.darkerGrey};
+    stroke: ${(props) => props.theme.colors.mediumGrey};
   }
 
   .isOpen & {
@@ -127,7 +123,7 @@ const ButtonDropdown = styled.button`
     color: #fff;
 
     .fill {
-      fill: #fff;
+      stroke: #fff;
     }
   }
 `
@@ -153,6 +149,33 @@ export const SearchField: React.FC<Props> = (props) => {
 
   return (
     <Wrapper {...restProps}>
+      {dropdownItems && (
+        <Dropdown
+          activeItemHighlight={true}
+          currentItem={currentItem}
+          disabled={disabled}
+          dropdownButtonContent={
+            <ButtonDropdown>
+              <DropdownButtonText>
+                {dropdownItems && dropdownItems[currentItem].text}
+              </DropdownButtonText>
+              <ChevronDownStyled />
+            </ButtonDropdown>
+          }
+          dropdownPosition={DropdownPosition.left}
+          items={dropdownItems.map((item, index) => (
+            <DropdownItem
+              key={index}
+              onClick={() => {
+                item.onClick()
+                setCurrentItem(index)
+              }}
+            >
+              {item.text}
+            </DropdownItem>
+          ))}
+        />
+      )}
       <Input
         autoComplete="off"
         disabled={disabled}
@@ -172,33 +195,6 @@ export const SearchField: React.FC<Props> = (props) => {
         <ClearSearchButton disabled={!value || disabled} onClick={onClear}>
           <ClearSearch />
         </ClearSearchButton>
-      )}
-      {dropdownItems && (
-        <Dropdown
-          activeItemHighlight={true}
-          currentItem={currentItem}
-          disabled={disabled}
-          dropdownButtonContent={
-            <ButtonDropdown>
-              <ClearSearchButtonText>
-                {dropdownItems && dropdownItems[currentItem].text}
-              </ClearSearchButtonText>
-              <ChevronDownStyled />
-            </ButtonDropdown>
-          }
-          dropdownPosition={DropdownPosition.right}
-          items={dropdownItems.map((item, index) => (
-            <DropdownItem
-              key={index}
-              onClick={() => {
-                item.onClick()
-                setCurrentItem(index)
-              }}
-            >
-              {item.text}
-            </DropdownItem>
-          ))}
-        />
       )}
     </Wrapper>
   )

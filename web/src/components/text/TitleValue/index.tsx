@@ -21,7 +21,7 @@ const Title = styled.div<{ flexDirection?: string }>`
 const TitleText = styled.h2`
   color: ${(props) => props.theme.colors.darkerGrey};
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
   margin: 0 10px 0 0;
   text-transform: uppercase;

@@ -1,4 +1,4 @@
-const borderColor = '#e6e9ed1'
+const borderColor = '#e6e9ed'
 const darkGrey = '#1e1e1e'
 const error = '#db3a3d'
 const errorDark = '#BC3033'
@@ -69,7 +69,7 @@ const theme = {
       borderColor: borderColor,
       color: textColor,
       colorActive: textColor,
-      height: '40px',
+      height: '37px',
       paddingHorizontal: '12px',
     },
   },

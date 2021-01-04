@@ -106,7 +106,7 @@ export const ButtonCSS = css<ButtonCommonProps>`
   cursor: pointer;
   display: flex;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   height: 35px;
   justify-content: center;
   line-height: 1;
