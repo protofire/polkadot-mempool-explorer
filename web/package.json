@@ -41,10 +41,11 @@
     "build": "NODE_ENV=production react-scripts build",
     "eject": "react-scripts eject",
     "lint:check": "eslint './src/**/*.{js,ts,tsx}'",
-    "lint:fix": "eslint './src/**/*.{js,ts,tsx}' --fix",
+    "lint:fix": "npm run lint:check -- --fix",
     "prebuild": "rm -rf dist",
-    "prettier:check": "prettier './src/**/*.{js,ts,tsx}' --check",
-    "prettier:fix": "prettier './src/**/*.{js,ts,tsx}' --write",
+    "prettier": "prettier './src/**/*.{js,ts,tsx}'",
+    "prettier:check": "npm run prettier -- --check",
+    "prettier:fix": "npm run prettier -- --write",
     "start": "NODE_ENV=development react-scripts start",
     "test": "NODE_ENV=test react-scripts test"
   },
@@ -56,7 +57,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint-staged --allow-empty"
+      "pre-commit": "lint-staged --allow-empty"
     }
   },
   "eslintConfig": {
