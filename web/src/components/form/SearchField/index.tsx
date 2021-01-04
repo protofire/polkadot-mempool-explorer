@@ -40,7 +40,7 @@ const Input = styled(Textfield)`
   z-index: 1;
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.mediumGray};
+    color: ${(props) => props.theme.colors.mediumGrey};
     font-size: 15px;
     font-weight: normal;
   }
@@ -70,11 +70,11 @@ const ClearSearchButton = styled.button`
   justify-content: center;
   outline: none;
   padding: 0;
-  width: 35px;
+  width: 36px;
 
   &:active {
     .fill {
-      fill: #000;
+      fill: ${(props) => props.theme.colors.darkGrey};
     }
   }
 

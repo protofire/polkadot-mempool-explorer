@@ -3,24 +3,25 @@ import styled from 'styled-components'
 
 const Wrapper = styled.svg`
   .fill {
-    fill: ${(props) => props.theme.colors.darkBlue};
+    fill: ${(props) => props.theme.colors.mediumGrey};
   }
 `
 
 export const CloseIcon: React.FC<{ className?: string }> = (props) => (
   <Wrapper
     className={`closeIcon ${props.className}`}
-    height="20"
-    viewBox="0 0 20 20"
-    width="20"
+    height="14"
+    viewBox="0 0 14 14"
+    width="14"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path d="M0 0h20v20H0z" fill="none" fillRule="evenodd" />
+    <path d="M0 0h14v14H0z" fill="none" fillRule="evenodd" />
     <path
       className="fill"
-      d="M11.13 10l6.633 6.632a.8.8 0 0 1-1.132 1.131L10 11.13l-6.635 6.632a.8.8 0 0 1-1.132-1.132L8.866 10 2.233 3.365a.8.8 0 0 1 1.132-1.132L10 8.866l6.633-6.633a.8.8 0 0 1 1.132 1.132L11.13 10z"
+      d="M8.657 7.832l4.836 4.836a.583.583 0 0 1-.825.825L7.832 8.657l-4.837 4.836a.583.583 0 0 1-.825-.825l4.836-4.836-4.837-4.837a.584.584 0 0 1 .825-.825l4.838 4.836 4.836-4.837a.584.584 0 0 1 .825.825L8.657 7.832z"
       fillRule="evenodd"
+      transform="translate(-.833 -.833)"
     />
   </Wrapper>
 )

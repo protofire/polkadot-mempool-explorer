@@ -44,15 +44,19 @@ export const Main: React.FC = (props) => {
       text: 'To Address',
     },
   ]
+  const [searchValue, setSearchValue] = React.useState('')
 
   return (
     <Wrapper {...restProps}>
       <SearchField
         dropdownItems={dropdownItems}
-        onChange={() => {
-          /**/
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setSearchValue(e.currentTarget.value)
         }}
-        value={''}
+        onClear={() => {
+          setSearchValue('')
+        }}
+        value={searchValue}
       />
     </Wrapper>
   )
