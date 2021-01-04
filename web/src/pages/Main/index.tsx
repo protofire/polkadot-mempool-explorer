@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { SearchField } from 'components/form/SearchField'
+import { PageTitle } from 'components/text/PageTitle'
 
 const Wrapper = styled.div``
 
@@ -58,6 +59,7 @@ export const Main: React.FC = (props) => {
         }}
         value={searchValue}
       />
+      <PageTitle extraControls={'asdasd'}>Mempool Explorer</PageTitle>
     </Wrapper>
   )
 }

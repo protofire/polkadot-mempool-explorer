@@ -4,14 +4,13 @@ import styled from 'styled-components'
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 0 0 20px;
-  padding-top: 36px;
+  margin: 0 0 15px;
 `
 
 const Title = styled.h2`
-  color: ${(props) => props.theme.colors.darkBlue};
-  font-size: 28px;
-  font-weight: 400;
+  color: ${(props) => props.theme.colors.textColor};
+  font-size: 22px;
+  font-weight: 500;
   line-height: 1.2;
   margin: 0 10px 0 0;
   text-align: left;

@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   border-radius: 4px;
   display: flex;
   height: 36px;
+  margin-bottom: 24px;
   max-width: 100%;
   width: 100%;
 
