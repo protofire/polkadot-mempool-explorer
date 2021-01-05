@@ -111,6 +111,18 @@ class CacheService {
     return extrinsics.filter((extrinsic) => !extrinsic.finalized);
   }
 
+  static async setTokenSymbol(networkId, tokenSymbol = 'DOT') {
+    const tokenSymbolKey = CacheService.getTokenSymbolKey(networkId);
+
+    lruCache.set(tokenSymbolKey, tokenSymbol);
+  }
+
+  static async getTokenSymbol(networkId) {
+    const tokenSymbolKey = CacheService.getTokenSymbolKey(networkId);
+
+    return lruCache.get(tokenSymbolKey);
+  }
+
   static getExtrinsicKey(hash, from, nonce, networkId) {
     if (!hash || !from || !Number.isInteger(nonce) || !networkId) {
       throw new Error('You must provide a hash, from, nonce and networkId in order to save an extrinsic');
@@ -121,6 +133,10 @@ class CacheService {
 
   static getNetworkKey(networkId) {
     return `network.id-${networkId}.key`;
+  }
+
+  static getTokenSymbolKey(networkId) {
+    return `${CacheService.getNetworkKey(networkId)}.token-symbol`;
   }
 }
 

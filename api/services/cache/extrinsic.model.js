@@ -28,6 +28,7 @@ class ExtrinsicModel {
     this.dropped = false;
     this.createAt = 0; // timestamp
     this.updateAt = 0; // timestamp
+    this.tokenSymbol = 'DOT';
     this.era = {
       isMortal: false,
       period: null,
@@ -59,6 +60,7 @@ class ExtrinsicModel {
     dropped,
     createAt,
     updateAt,
+    tokenSymbol,
     era,
     block,
   } = {}) {
@@ -81,6 +83,7 @@ class ExtrinsicModel {
     this.dropped = isBoolean(dropped) ? dropped : this.dropped;
     this.createAt = createAt || this.createAt;
     this.updateAt = updateAt || this.updateAt;
+    this.tokenSymbol = tokenSymbol || this.tokenSymbol;
     this.era = { ...this.era, ...era || {} };
     this.block = { ...this.block, ...block || {} };
   }
@@ -110,6 +113,7 @@ class ExtrinsicModel {
       dropped: this.dropped,
       createAt: this.createAt,
       updateAt: this.updateAt,
+      tokenSymbol: this.tokenSymbol,
       era: this.era,
     });
   }
