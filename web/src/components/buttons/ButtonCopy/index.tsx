@@ -4,30 +4,33 @@ import styled from 'styled-components'
 import { CopyIcon } from 'components/icons/CopyIcon'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-const Wrapper = styled.button<{ light?: boolean }>`
-  background: none;
+const Wrapper = styled.button`
+  align-items: center;
+  background: #f0f1f2;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  height: 15px;
-  margin: 0 0 0 8px;
+  display: flex;
+  height: 22px;
+  justify-content: center;
+  margin: 0;
   outline: none;
   padding: 0;
-  width: 13px;
-
-  ${(props) =>
-    props.light &&
-    `svg {
-      .fill {
-        fill: #b2b5b2;
-      }
-    }`}
+  transition: all 0.1s linear;
+  width: 22px;
 
   &:active {
     opacity: 0.7;
   }
 
   &:hover {
-    filter: brightness(50%);
+    background: ${(props) => props.theme.colors.primary};
+
+    svg {
+      .fill {
+        fill: #fff;
+      }
+    }
   }
 
   &[disabled],
@@ -37,17 +40,16 @@ const Wrapper = styled.button<{ light?: boolean }>`
   }
 `
 
-interface ButtonCopyProps {
-  light?: boolean
+interface Props {
   value: string
 }
 
-export const ButtonCopy: React.FC<ButtonCopyProps> = (props) => {
-  const { light = false, value, ...restProps } = props
+export const ButtonCopy: React.FC<Props> = (props) => {
+  const { value, ...restProps } = props
 
   return (
     <CopyToClipboard text={value}>
-      <Wrapper className="buttonCopy" light={light} {...restProps}>
+      <Wrapper className="buttonCopy" {...restProps}>
         <CopyIcon />
       </Wrapper>
     </CopyToClipboard>

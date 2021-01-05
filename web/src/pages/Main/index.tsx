@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
+import { Transaction } from 'components/common/Transaction'
 import { SearchField } from 'components/form/SearchField'
 import { AllTransactions } from 'components/icons/AllTransactions'
 import { ChevronDown } from 'components/icons/ChevronDown'
@@ -30,7 +31,7 @@ const TitleDropdownButtonText = styled.span`
 
   .dropdown:hover &,
   .isOpen & {
-    color: ${(props) => props.theme.colors.textColor};
+    color: ${(props) => props.theme.colors.mediumGr};
   }
 `
 
@@ -119,6 +120,17 @@ export const Main: React.FC = (props) => {
   ]
   const [currentTitleDropdownItems, setCurrentTitleDropdownItems] = React.useState(0)
 
+  const transactions = [
+    {
+      txHash: '0xedcf1c01ed167f662bd64b7a68f6cfa16f5c23b126d82f3ee958226aacbbd3a1',
+      time: 'Dec 9, 2020, 3:30:42 PM',
+    },
+    {
+      txHash: '0x23f8c025a049bf3973a2adb005c222229194f25986fc23d5a0a73d11974185d0',
+      time: 'Dec 9, 2020, 2:57:12 PM',
+    },
+  ]
+
   return (
     <Wrapper {...restProps}>
       <SearchField
@@ -163,6 +175,9 @@ export const Main: React.FC = (props) => {
       >
         Mempool Explorer
       </PageTitle>
+      {transactions.map((item, index) => {
+        return <Transaction data={item} key={index} />
+      })}
     </Wrapper>
   )
 }
