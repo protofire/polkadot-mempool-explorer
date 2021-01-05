@@ -6,7 +6,9 @@ import { ButtonExternalLink } from 'components/buttons/ButtonExternalLink'
 import { CheckIcon } from 'components/icons/CheckIcon'
 import { ErrorIcon } from 'components/icons/ErrorIcon'
 import { TimeIcon } from 'components/icons/TimeIcon'
+import { TransferArrow } from 'components/icons/TransferArrow'
 import { BaseCard } from 'components/pureStyledComponents/BaseCard'
+import Identicon from 'react-hooks-identicons'
 
 const Wrapper = styled(BaseCard)`
   margin: 0 0 10px;
@@ -39,12 +41,24 @@ const TitleRow = styled(Row)`
 const Label = styled.span`
   color: ${(props) => props.theme.colors.textColor};
   font-weight: 500;
+  line-height: 1.2;
   margin-right: 6px;
+  white-space: nowrap;
+`
+
+const VerticalLabel = styled.span`
+  display: block;
+  margin-bottom: -3px;
+  margin-right: 0;
 `
 
 const ValueCSS = css`
   color: ${(props) => props.theme.colors.mediumGrey};
+  line-height: 1.2;
   margin-right: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:last-child {
     margin-right: 0;
@@ -85,13 +99,17 @@ const Time = styled.a`
 `
 
 const ValuesGrid = styled.div`
-  column-gap: 25px;
+  column-gap: 20px;
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   margin-bottom: 17px;
   row-gap: 5px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
 
 const ButtonExternalLinkMini = styled(ButtonExternalLink)`
@@ -104,29 +122,79 @@ const ButtonExternalLinkMini = styled(ButtonExternalLink)`
   }
 `
 
+const BalanceTransferValue = styled(Value)`
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: 500;
+`
+
+const BalanceTransfer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 50px 1fr;
+`
+
+const TransferSubject = styled.div`
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+`
+
+const TransferIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+`
+const IdenticonCol = styled.div`
+  padding-top: 5px;
+`
+const IdenticonWrapper = styled.div`
+  border-radius: 50%;
+  height: 32px;
+  overflow: hidden;
+  width: 32px;
+
+  canvas {
+    display: block;
+  }
+`
+
+const TransferInfo = styled.div``
+
 interface Props {
   data: any
 }
 
 export const Transaction: React.FC<Props> = (props) => {
   const { data, ...restProps } = props
-  const { blockNumber, extrinsicType, nonce, result, time, txHash } = data
-  const explorerURL = 'https://polkadot.subscan.io/block/'
+  const {
+    balanceTransfer,
+    blockNumber,
+    extrinsicType,
+    from,
+    nonce,
+    result,
+    time,
+    to,
+    txHash,
+  } = data
+  const explorerURL = 'https://polkadot.subscan.io/'
+  const blockURL = `${explorerURL}block/`
+  const accountURL = `${explorerURL}account/`
 
   return (
     <Wrapper {...restProps}>
       <TopWrapper>
         <TitleRow>
           <Label>Tx Hash:</Label>
-          <LinkValue href={`${explorerURL}${txHash}`} target="_blank">
+          <LinkValue href={`${blockURL}${txHash}`} target="_blank">
             {txHash}
           </LinkValue>
           <ButtonCopy value={txHash} />
-          <ButtonExternalLink href={`${explorerURL}${txHash}`} style={{ marginLeft: '2px' }} />
+          <ButtonExternalLink href={`${blockURL}${txHash}`} style={{ marginLeft: '2px' }} />
         </TitleRow>
         <TimeWrapper>
           <TimeIcon />
-          <Time href={`${explorerURL}${txHash}`} target="_blank">
+          <Time href={`${blockURL}${txHash}`} target="_blank">
             {time}
           </Time>
         </TimeWrapper>
@@ -135,10 +203,10 @@ export const Transaction: React.FC<Props> = (props) => {
         {blockNumber && (
           <Row>
             <Label>Block Number:</Label>
-            <LinkValue href={`${explorerURL}${blockNumber}`} target="_blank">
+            <LinkValue href={`${blockURL}${blockNumber}`} target="_blank">
               #{blockNumber}
             </LinkValue>
-            <ButtonExternalLinkMini href={`${explorerURL}${blockNumber}`} />
+            <ButtonExternalLinkMini href={`${blockURL}${blockNumber}`} />
           </Row>
         )}
         {nonce && (
@@ -162,6 +230,53 @@ export const Transaction: React.FC<Props> = (props) => {
           </Row>
         )}
       </ValuesGrid>
+      {balanceTransfer && (
+        <>
+          <TitleRow>
+            <Label>Balance Transfer</Label>
+            <BalanceTransferValue>({balanceTransfer} DOT)</BalanceTransferValue>
+          </TitleRow>
+          <BalanceTransfer>
+            <TransferSubject>
+              <IdenticonCol>
+                <IdenticonWrapper>
+                  {<Identicon bg="#f0f1f2" count="5" size="33" string={from} />}
+                </IdenticonWrapper>
+              </IdenticonCol>
+              <TransferInfo>
+                <VerticalLabel>From</VerticalLabel>
+                <Row>
+                  <LinkValue href={`${accountURL}${from}`} target="_blank">
+                    {from}
+                  </LinkValue>
+                  <ButtonCopy value={from} />
+                  <ButtonExternalLink href={`${accountURL}${from}`} style={{ marginLeft: '2px' }} />
+                </Row>
+              </TransferInfo>
+            </TransferSubject>
+            <TransferIconWrapper>
+              <TransferArrow />
+            </TransferIconWrapper>
+            <TransferSubject>
+              <IdenticonCol>
+                <IdenticonWrapper>
+                  {<Identicon bg="#f0f1f2" count="5" size="33" string={to} />}
+                </IdenticonWrapper>
+              </IdenticonCol>
+              <TransferInfo>
+                <VerticalLabel>To</VerticalLabel>
+                <Row>
+                  <LinkValue href={`${accountURL}${to}`} target="_blank">
+                    {to}
+                  </LinkValue>
+                  <ButtonCopy value={to} />
+                  <ButtonExternalLink href={`${accountURL}${to}`} style={{ marginLeft: '2px' }} />
+                </Row>
+              </TransferInfo>
+            </TransferSubject>
+          </BalanceTransfer>
+        </>
+      )}
     </Wrapper>
   )
 }
