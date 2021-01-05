@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components'
 
 import { ButtonCopy } from 'components/buttons/ButtonCopy'
 import { ButtonExternalLink } from 'components/buttons/ButtonExternalLink'
+import { CheckIcon } from 'components/icons/CheckIcon'
+import { ErrorIcon } from 'components/icons/ErrorIcon'
 import { TimeIcon } from 'components/icons/TimeIcon'
 import { BaseCard } from 'components/pureStyledComponents/BaseCard'
 
@@ -82,13 +84,33 @@ const Time = styled.a`
   }
 `
 
+const ValuesGrid = styled.div`
+  column-gap: 25px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  margin-bottom: 17px;
+  row-gap: 5px;
+`
+
+const ButtonExternalLinkMini = styled(ButtonExternalLink)`
+  height: 18px;
+  width: 18px;
+
+  svg {
+    height: 7px;
+    width: 7px;
+  }
+`
+
 interface Props {
   data: any
 }
 
 export const Transaction: React.FC<Props> = (props) => {
   const { data, ...restProps } = props
-  const { time, txHash } = data
+  const { blockNumber, extrinsicType, nonce, result, time, txHash } = data
   const explorerURL = 'https://polkadot.subscan.io/block/'
 
   return (
@@ -109,6 +131,37 @@ export const Transaction: React.FC<Props> = (props) => {
           </Time>
         </TimeWrapper>
       </TopWrapper>
+      <ValuesGrid>
+        {blockNumber && (
+          <Row>
+            <Label>Block Number:</Label>
+            <LinkValue href={`${explorerURL}${blockNumber}`} target="_blank">
+              #{blockNumber}
+            </LinkValue>
+            <ButtonExternalLinkMini href={`${explorerURL}${blockNumber}`} />
+          </Row>
+        )}
+        {nonce && (
+          <Row>
+            <Label>Nonce:</Label>
+            <Value>{nonce}</Value>
+          </Row>
+        )}
+        {extrinsicType && (
+          <Row>
+            <Label>Extrinsic Type:</Label>
+            <Value>{extrinsicType}</Value>
+          </Row>
+        )}
+        {result && (
+          <Row>
+            <Label>Result:</Label>
+            <Value style={{ textTransform: 'capitalize' }}>{result}</Value>
+            {result === 'valid' && <CheckIcon />}
+            {result === 'invalid' && <ErrorIcon />}
+          </Row>
+        )}
+      </ValuesGrid>
     </Wrapper>
   )
 }

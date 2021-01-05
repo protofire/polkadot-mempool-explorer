@@ -122,8 +122,12 @@ export const Main: React.FC = (props) => {
 
   const transactions = [
     {
-      txHash: '0xedcf1c01ed167f662bd64b7a68f6cfa16f5c23b126d82f3ee958226aacbbd3a1',
+      blockNumber: '2826376',
+      extrinsicType: 'Signed Transaction',
+      nonce: '0',
+      result: 'valid',
       time: 'Dec 9, 2020, 3:30:42 PM',
+      txHash: '0xedcf1c01ed167f662bd64b7a68f6cfa16f5c23b126d82f3ee958226aacbbd3a1',
     },
     {
       txHash: '0x23f8c025a049bf3973a2adb005c222229194f25986fc23d5a0a73d11974185d0',
