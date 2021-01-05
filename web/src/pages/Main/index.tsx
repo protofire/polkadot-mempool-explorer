@@ -3,7 +3,10 @@ import styled from 'styled-components'
 
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
 import { SearchField } from 'components/form/SearchField'
+import { AllTransactions } from 'components/icons/AllTransactions'
 import { ChevronDown } from 'components/icons/ChevronDown'
+import { InMempool } from 'components/icons/InMempool'
+import { JustRemoved } from 'components/icons/JustRemoved'
 import { PageTitle } from 'components/text/PageTitle'
 
 const Wrapper = styled.div``
@@ -23,10 +26,16 @@ const TitleDropdownButtonText = styled.span`
   color: ${(props) => props.theme.colors.mediumGrey};
   font-size: 15px;
   font-weight: 500;
+  margin-left: 8px;
 
+  .dropdown:hover &,
   .isOpen & {
     color: ${(props) => props.theme.colors.textColor};
   }
+`
+
+const TitleDropdownItemText = styled.span`
+  margin-left: 8px;
 `
 
 const ChevronDownStyled = styled(ChevronDown)`
@@ -37,6 +46,7 @@ const ChevronDownStyled = styled(ChevronDown)`
     stroke: ${(props) => props.theme.colors.mediumGrey};
   }
 
+  .dropdown:hover &,
   .isOpen & {
     .fill {
       stroke: ${(props) => props.theme.colors.textColor};
@@ -49,35 +59,35 @@ export const Main: React.FC = (props) => {
   const searchDropdownItems = [
     {
       onClick: () => {
-        console.log('All')
+        /* */
       },
       placeholder: 'Search transactions by Tx Hash, Block #, From Address, To Address…',
       text: 'All',
     },
     {
       onClick: () => {
-        console.log('Tx Hash')
+        /* */
       },
       placeholder: 'Search transactions by Tx Hash.',
       text: 'Tx Hash',
     },
     {
       onClick: () => {
-        console.log('Block #')
+        /* */
       },
       placeholder: 'Search transactions by Block #',
       text: 'Block #',
     },
     {
       onClick: () => {
-        console.log('From Address')
+        /* */
       },
       placeholder: 'Search transactions by From Address.',
       text: 'From Address',
     },
     {
       onClick: () => {
-        console.log('To Address')
+        /* */
       },
       placeholder: 'Search transactions by To Address.',
       text: 'To Address',
@@ -87,21 +97,24 @@ export const Main: React.FC = (props) => {
   const titleDropdownItems = [
     {
       onClick: () => {
-        console.log('All Transactions')
+        /* */
       },
       text: 'All Transactions',
+      icon: <AllTransactions />,
     },
     {
       onClick: () => {
-        console.log('In Mempool')
+        /* */
       },
       text: 'In Mempool',
+      icon: <InMempool />,
     },
     {
       onClick: () => {
-        console.log('Just Removed')
+        /* */
       },
       text: 'Just Removed',
+      icon: <JustRemoved />,
     },
   ]
   const [currentTitleDropdownItems, setCurrentTitleDropdownItems] = React.useState(0)
@@ -125,6 +138,7 @@ export const Main: React.FC = (props) => {
             currentItem={currentTitleDropdownItems}
             dropdownButtonContent={
               <TitleDropdownButton>
+                {titleDropdownItems[currentTitleDropdownItems].icon}
                 <TitleDropdownButtonText>
                   {titleDropdownItems[currentTitleDropdownItems].text}
                 </TitleDropdownButtonText>
@@ -140,7 +154,8 @@ export const Main: React.FC = (props) => {
                   setCurrentTitleDropdownItems(index)
                 }}
               >
-                {item.text}
+                {item.icon}
+                <TitleDropdownItemText>{item.text}</TitleDropdownItemText>
               </DropdownItem>
             ))}
           />

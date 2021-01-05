@@ -63,6 +63,7 @@ const Items = styled(BaseCard)<{
   fullWidth?: boolean
   isOpen: boolean
 }>`
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
   min-width: 160px;
   position: absolute;
