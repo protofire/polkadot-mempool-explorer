@@ -5,7 +5,7 @@ const Wrapper = styled.svg`
   display: block;
 
   .fill {
-    fill: #1e1e1e;
+    fill: ${(props) => props.theme.colors.darkGrey};
   }
 `
 
