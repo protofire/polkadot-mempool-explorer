@@ -46,7 +46,7 @@ const CloseButton = styled.button`
 interface Props {
   children: React.ReactNode
   isOpen: boolean
-  onClose?: () => void
+  onClose: () => void
   title: string
 }
 
@@ -57,7 +57,11 @@ export const Modal = (props: Props) => {
   return portalContainer && isOpen
     ? ReactDOM.createPortal(
         <Overlay onClick={onClose}>
-          <ModalCard>
+          <ModalCard
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+          >
             <TitleWrapper>
               <Title>{title}</Title>
               <CloseButton onClick={onClose}>
