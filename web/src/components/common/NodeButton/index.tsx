@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
@@ -88,10 +88,12 @@ const ButtonAdd = styled(Button)`
   width: 100%;
 `
 
-const CustomDropdownItem = styled(DropdownItem)`
+const CustomDropdownItem = styled(DropdownItem)<{ unClickable?: boolean }>`
   align-items: flex-start;
   flex-flow: column;
   position: relative;
+
+  ${(props) => props.unClickable && 'cursor: default; background: transparent!important;'}
 `
 
 const ItemNameWrapper = styled.div`
@@ -150,12 +152,12 @@ export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
   const [isWorking, setIsWorking] = React.useState(false)
 
-  const connectToNode = () => {
+  const connectToNode = React.useCallback(() => {
     setIsWorking(true)
     setTimeout(() => {
       setIsWorking(false)
     }, 2000)
-  }
+  }, [])
 
   const dropdownItems = [
     {
@@ -169,27 +171,30 @@ export const NodeButton: React.FC = (props) => {
       url: 'https://localnode:3000',
     },
     {
-      connectToNode,
+      onClick: connectToNode,
       name: 'Secondary Node',
       url: 'https://someserver.net',
     },
     {
-      connectToNode,
+      onClick: connectToNode,
       name: 'Development Node',
       url: 'https://someserver.dev',
     },
     {
-      connectToNode,
+      onClick: connectToNode,
       name: 'Staging Node',
       url: 'https://staging.dev',
     },
   ]
   const [currentItem, setcurrentItem] = React.useState(0)
 
-  const removeNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
-    e.stopPropagation()
-    alert(`Removing node #${index}`)
-  }
+  const removeNode = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+      e.stopPropagation()
+      alert(`Removing node #${index}`)
+    },
+    []
+  )
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
 
@@ -212,11 +217,12 @@ export const NodeButton: React.FC = (props) => {
               <CustomDropdownItem
                 key={index}
                 onClick={() => {
-                  if (typeof item.onClick === 'function') {
+                  if (typeof item.onClick === 'function' && currentItem !== index) {
                     item.onClick()
                   }
                   setcurrentItem(index)
                 }}
+                unClickable={currentItem === index}
               >
                 <ItemNameWrapper>
                   <NodeStatus isSelected={currentItem === index} />
