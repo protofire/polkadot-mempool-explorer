@@ -100,18 +100,18 @@ const getButtonTypeStyles = (buttonType: ButtonType = ButtonType.primary): any =
 
 export const ButtonCSS = css<ButtonCommonProps>`
   align-items: center;
-  border-radius: 4px;
+  border-radius: 3px;
   border-style: solid;
   border-width: 1px;
   cursor: pointer;
   display: flex;
-  font-size: 20px;
-  font-weight: 500;
-  height: 35px;
+  font-size: 15px;
+  font-weight: 600;
+  height: 26px;
   justify-content: center;
   line-height: 1;
   outline: none;
-  padding: 0 25px;
+  padding: 0 20px;
   text-align: center;
   transition: all 0.15s ease-out;
   user-select: none;

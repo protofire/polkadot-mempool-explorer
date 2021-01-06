@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const MARGIN_BOTTOM = '16px'
+const MARGIN_BOTTOM = '12px'
 
 export const Row = styled.div<{ cols?: string; paddingTop?: boolean }>`
   display: grid;

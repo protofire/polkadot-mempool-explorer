@@ -3,9 +3,15 @@ import styled from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
+import { Modal } from 'components/common/Modal'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
 import { RemoveIcon } from 'components/icons/RemoveIcon'
+import { ButtonContainer } from 'components/pureStyledComponents/ButtonContainer'
+import { Row } from 'components/pureStyledComponents/Row'
+import { SmallNote } from 'components/pureStyledComponents/SmallNote'
+import { Textfield } from 'components/pureStyledComponents/Textfield'
+import { TitleValue } from 'components/text/TitleValue'
 
 const CustomDropdown = styled(Dropdown)`
   &,
@@ -180,50 +186,80 @@ export const NodeButton: React.FC = (props) => {
   ]
   const [currentItem, setcurrentItem] = React.useState(0)
 
+  const removeNode = (index: number) => {
+    /**/
+  }
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+
   return (
-    <CustomDropdown
-      activeItemHighlight={true}
-      currentItem={currentItem}
-      dropdownButtonContent={
-        <DropdownButton>
-          <NetworkIcon />
-          <Text>Main Node</Text>
-          <ChevronDownStyled />
-        </DropdownButton>
-      }
-      dropdownPosition={DropdownPosition.right}
-      items={[
-        <ItemsWrapper key="ItemsWrapper">
-          {dropdownItems.map((item, index) => (
-            <CustomDropdownItem
-              key={index}
-              onClick={() => {
-                item.onClick()
-                setcurrentItem(index)
-              }}
-            >
-              <ItemNameWrapper>
-                <NodeStatus isSelected={currentItem === index} />
-                {item.name}
-              </ItemNameWrapper>
-              <ItemURL>{item.url}</ItemURL>
-              {currentItem !== index && (
-                <ButtonDelete
-                  onClick={() => {
-                    /**/
-                  }}
-                >
-                  <RemoveIcon />
-                </ButtonDelete>
-              )}
-            </CustomDropdownItem>
-          ))}
-        </ItemsWrapper>,
-        <ButtonWrapper key="ButtonWrapper">
-          <ButtonAdd>Add Node</ButtonAdd>
-        </ButtonWrapper>,
-      ]}
-      {...restProps}
-    />
+    <>
+      <CustomDropdown
+        activeItemHighlight={true}
+        currentItem={currentItem}
+        dropdownButtonContent={
+          <DropdownButton>
+            <NetworkIcon />
+            <Text>Main Node</Text>
+            <ChevronDownStyled />
+          </DropdownButton>
+        }
+        dropdownPosition={DropdownPosition.right}
+        items={[
+          <ItemsWrapper key="ItemsWrapper">
+            {dropdownItems.map((item, index) => (
+              <CustomDropdownItem
+                key={index}
+                onClick={() => {
+                  item.onClick()
+                  setcurrentItem(index)
+                }}
+              >
+                <ItemNameWrapper>
+                  <NodeStatus isSelected={currentItem === index} />
+                  {item.name}
+                </ItemNameWrapper>
+                <ItemURL>{item.url}</ItemURL>
+                {currentItem !== index && (
+                  <ButtonDelete
+                    onClick={() => {
+                      removeNode(index)
+                    }}
+                  >
+                    <RemoveIcon />
+                  </ButtonDelete>
+                )}
+              </CustomDropdownItem>
+            ))}
+          </ItemsWrapper>,
+          <ButtonWrapper key="ButtonWrapper">
+            <ButtonAdd onClick={() => setIsModalOpen(true)}>Add Node</ButtonAdd>
+          </ButtonWrapper>,
+        ]}
+        {...restProps}
+      />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add Node">
+        <Row>
+          <TitleValue title="Node Name" value={<Textfield placeholder="A descriptive name…" />} />
+        </Row>
+        <Row>
+          <TitleValue
+            title="Node URL"
+            value={
+              <>
+                <Textfield placeholder="http(s)://yournodeurl…" />
+                <SmallNote>
+                  <strong>Note:</strong> Transactions&apos; cache and other functionality could be
+                  unavailable when you use a custom node.
+                </SmallNote>
+              </>
+            }
+          />
+        </Row>
+        <ButtonContainer>
+          <Button onClick={() => setIsModalOpen(false)}>Add</Button>
+        </ButtonContainer>
+      </Modal>
+    </>
   )
 }

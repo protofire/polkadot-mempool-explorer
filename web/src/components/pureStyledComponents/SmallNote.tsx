@@ -1,16 +1,11 @@
 import styled from 'styled-components'
 
-export const SmallNote = styled.p<{ marginBottom?: string }>`
-  color: ${(props) => props.theme.colors.darkGrey};
-  font-size: 14px;
-  font-style: italic;
+export const SmallNote = styled.p`
+  color: ${(props) => props.theme.colors.mediumGrey};
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.4;
-  margin: 0 0 ${(props) => props.marginBottom} 0;
+  line-height: 1.3;
+  margin: 0;
   padding: 5px 0 0 0;
-  text-align: right;
+  text-align: left;
 `
-
-SmallNote.defaultProps = {
-  marginBottom: '0',
-}
