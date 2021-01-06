@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
+import { FullSpinner } from 'components/common/FullSpinner'
 import { Modal } from 'components/common/Modal'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
@@ -147,47 +148,47 @@ const ButtonDelete = styled.div`
 
 export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
+  const [isWorking, setIsWorking] = React.useState(false)
+
+  const connectToNode = () => {
+    setIsWorking(true)
+    setTimeout(() => {
+      setIsWorking(false)
+    }, 2000)
+  }
+
   const dropdownItems = [
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: connectToNode,
       name: 'Main Node',
       url: 'https://mainnodeurl.com',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: connectToNode,
       name: 'Local Node',
       url: 'https://localnode:3000',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      connectToNode,
       name: 'Secondary Node',
       url: 'https://someserver.net',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      connectToNode,
       name: 'Development Node',
       url: 'https://someserver.dev',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      connectToNode,
       name: 'Staging Node',
       url: 'https://staging.dev',
     },
   ]
   const [currentItem, setcurrentItem] = React.useState(0)
 
-  const removeNode = (index: number) => {
-    /**/
+  const removeNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    e.stopPropagation()
+    alert(`Removing node #${index}`)
   }
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
@@ -211,7 +212,9 @@ export const NodeButton: React.FC = (props) => {
               <CustomDropdownItem
                 key={index}
                 onClick={() => {
-                  item.onClick()
+                  if (typeof item.onClick === 'function') {
+                    item.onClick()
+                  }
                   setcurrentItem(index)
                 }}
               >
@@ -220,10 +223,10 @@ export const NodeButton: React.FC = (props) => {
                   {item.name}
                 </ItemNameWrapper>
                 <ItemURL>{item.url}</ItemURL>
-                {currentItem !== index && (
+                {currentItem !== index && index !== 0 && (
                   <ButtonDelete
-                    onClick={() => {
-                      removeNode(index)
+                    onClick={(e) => {
+                      removeNode(e, index)
                     }}
                   >
                     <RemoveIcon />
@@ -260,6 +263,7 @@ export const NodeButton: React.FC = (props) => {
           <Button onClick={() => setIsModalOpen(false)}>Add</Button>
         </ButtonContainer>
       </Modal>
+      <FullSpinner isWorking={isWorking} text="Loading selected node…" />
     </>
   )
 }
