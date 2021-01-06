@@ -1,14 +1,33 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { Button } from 'components/buttons/Button'
+import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
+import { ChevronDown } from 'components/icons/ChevronDown'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
+import { RemoveIcon } from 'components/icons/RemoveIcon'
 
-const Wrapper = styled.div`
+const CustomDropdown = styled(Dropdown)`
+  &,
+  & .dropdownButton {
+    height: 100%;
+  }
+`
+
+const DropdownButton = styled.button`
   align-items: center;
+  background: transparent;
   border-bottom: 3px solid transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
   color: #fff;
+  cursor: pointer;
   display: flex;
   height: 100%;
+  justify-content: center;
+  outline: none;
+  padding: 0;
   text-decoration: none;
   transition: all 0.15s linear;
 
@@ -17,27 +36,194 @@ const Wrapper = styled.div`
   }
 `
 
-const Link = styled.span`
-  align-items: center;
-  display: flex;
-  height: 20px;
+const ChevronDownStyled = styled(ChevronDown)`
+  flex-shrink: 0;
+  margin-left: 10px;
+  margin-top: 2px;
+
+  .fill {
+    stroke: #fff;
+  }
+
+  .dropdown:hover &,
+  .isOpen & {
+    .fill {
+      stroke: #fff;
+    }
+  }
 `
 
 const Text = styled.span`
   font-size: 14px;
+  font-weight: 600;
   line-height: 1.2;
   margin-left: 6px;
 `
 
+const ItemsWrapper = styled.div`
+  margin-bottom: -1px;
+  max-height: 160px;
+  overflow: auto;
+  width: 200px;
+`
+
+const ButtonWrapper = styled.div`
+  border-top: 1px solid ${(props) => props.theme.border.color};
+  display: flex;
+  padding: 10px 12px;
+  width: 200px;
+`
+
+const ButtonAdd = styled(Button)`
+  font-size: 15px;
+  font-weight: 600;
+  height: 26px;
+  width: 100%;
+`
+
+const CustomDropdownItem = styled(DropdownItem)`
+  align-items: flex-start;
+  flex-flow: column;
+  position: relative;
+`
+
+const ItemNameWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 1;
+`
+
+const ItemURL = styled.div`
+  color: #a2a2a2;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 1;
+`
+
+const NodeStatus = styled.div<{ isSelected?: boolean }>`
+  background-color: ${(props) => (props.isSelected ? '#34b424' : '#a2a2a2')};
+  border-radius: 50%;
+  height: 8px;
+  margin-right: 6px;
+  width: 8px;
+`
+
+const ButtonDelete = styled.div`
+  align-items: center;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  z-index: 5;
+
+  &:hover {
+    .fill {
+      fill: #e60000;
+    }
+  }
+`
+
 export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
+  const dropdownItems = [
+    {
+      onClick: () => {
+        /* */
+      },
+      name: 'Main Node',
+      url: 'https://mainnodeurl.com',
+    },
+    {
+      onClick: () => {
+        /* */
+      },
+      name: 'Local Node',
+      url: 'https://localnode:3000',
+    },
+    {
+      onClick: () => {
+        /* */
+      },
+      name: 'Secondary Node',
+      url: 'https://someserver.net',
+    },
+    {
+      onClick: () => {
+        /* */
+      },
+      name: 'Development Node',
+      url: 'https://someserver.dev',
+    },
+    {
+      onClick: () => {
+        /* */
+      },
+      name: 'Staging Node',
+      url: 'https://staging.dev',
+    },
+  ]
+  const [currentItem, setcurrentItem] = React.useState(0)
 
   return (
-    <Wrapper {...restProps}>
-      <Link>
-        <NetworkIcon />
-        <Text>Main Node</Text>
-      </Link>
-    </Wrapper>
+    <CustomDropdown
+      activeItemHighlight={true}
+      currentItem={currentItem}
+      dropdownButtonContent={
+        <DropdownButton>
+          <NetworkIcon />
+          <Text>Main Node</Text>
+          <ChevronDownStyled />
+        </DropdownButton>
+      }
+      dropdownPosition={DropdownPosition.right}
+      items={[
+        <ItemsWrapper key="ItemsWrapper">
+          {dropdownItems.map((item, index) => (
+            <CustomDropdownItem
+              key={index}
+              onClick={() => {
+                item.onClick()
+                setcurrentItem(index)
+              }}
+            >
+              <ItemNameWrapper>
+                <NodeStatus isSelected={currentItem === index} />
+                {item.name}
+              </ItemNameWrapper>
+              <ItemURL>{item.url}</ItemURL>
+              {currentItem !== index && (
+                <ButtonDelete
+                  onClick={() => {
+                    /**/
+                  }}
+                >
+                  <RemoveIcon />
+                </ButtonDelete>
+              )}
+            </CustomDropdownItem>
+          ))}
+        </ItemsWrapper>,
+        <ButtonWrapper key="ButtonWrapper">
+          <ButtonAdd>Add Node</ButtonAdd>
+        </ButtonWrapper>,
+      ]}
+      {...restProps}
+    />
   )
 }
