@@ -46,6 +46,12 @@ class PolkadotService {
     return network;
   }
 
+  static async setTokenSymbol(networkId, api) {
+    const { tokenSymbol } = await api.rpc.system.properties();
+
+    await CacheService.setTokenSymbol(networkId, tokenSymbol.toString());
+  }
+
   /**
    * Connect to Polkadot via WebSocket
    * @param {string} networkId
@@ -73,6 +79,8 @@ class PolkadotService {
       }
 
       connections[networkId] = api;
+
+      await PolkadotService.setTokenSymbol(networkId, api);
     }
 
     return connections[networkId];
@@ -87,6 +95,7 @@ class PolkadotService {
       logger.info(`Init watcher extrinsics for network: ${networkId}`);
 
       const api = await PolkadotService.connect(networkId);
+      const tokenSymbol = await CacheService.getTokenSymbol(networkId);
 
       const unsub = setInterval(async () => {
         await api.rpc.author.pendingExtrinsics(async (extrinsics) => {
@@ -103,6 +112,7 @@ class PolkadotService {
               const tip = parseFloat(extrinsic.tip.toString());
               let to = null;
               let value = 0;
+              let symbol = tokenSymbol;
               let era = { isMortal: false };
 
               // Start to track transaction life cycle
@@ -111,10 +121,10 @@ class PolkadotService {
               extrinsic.args.forEach((arg) => {
                 switch (arg.toRawType()) {
                   case 'AccountId':
-                    to = arg.toString();
+                    to = arg.toHuman();
                     break;
                   case 'Compact<Balance>':
-                    value = parseFloat(arg.toString());
+                    [value, symbol] = arg.toHuman().split(' ');
                     break;
                   default:
                     break;
@@ -139,6 +149,7 @@ class PolkadotService {
                 era,
                 nonce,
                 tip,
+                tokenSymbol: symbol,
                 section: extrinsic.method.sectionName,
                 method: extrinsic.method.methodName,
                 transactionVersion: extrinsic.type,
