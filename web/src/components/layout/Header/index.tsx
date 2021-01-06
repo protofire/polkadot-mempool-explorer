@@ -1,20 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { GithubButton } from 'components/common/GithubButton'
 import { Logo } from 'components/common/Logo'
 import { InnerContainer } from 'components/pureStyledComponents/InnerContainer'
 
 const Wrapper = styled.header`
-  &.siteHeader {
-    align-items: center;
-    background-color: ${(props) => props.theme.header.backgroundColor};
-    display: flex;
-    flex-shrink: 0;
-    height: ${(props) => props.theme.header.height};
-    justify-content: space-between;
-    position: relative;
-    z-index: 100;
-  }
+  align-items: center;
+  background-color: ${(props) => props.theme.header.backgroundColor};
+  display: flex;
+  flex-shrink: 0;
+  height: ${(props) => props.theme.header.height};
+  justify-content: space-between;
+  position: relative;
+  z-index: 100;
+`
+
+const HeaderInnerContainer = styled(InnerContainer)`
+  align-items: center;
+  flex-direction: row;
+  flex-grow: 1;
+  height: 100%;
+  justify-content: space-between;
 `
 
 const LogoLink = styled.a`
@@ -35,14 +42,21 @@ const LogoLink = styled.a`
   }
 `
 
+const EndElements = styled.div`
+  height: 100%;
+`
+
 export const Header: React.FC = (props) => {
   return (
     <Wrapper className="siteHeader" {...props}>
-      <InnerContainer>
+      <HeaderInnerContainer>
         <LogoLink className="logoLink" href="/">
           <Logo />
         </LogoLink>
-      </InnerContainer>
+        <EndElements>
+          <GithubButton />
+        </EndElements>
+      </HeaderInnerContainer>
     </Wrapper>
   )
 }
