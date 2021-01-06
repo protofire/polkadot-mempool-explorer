@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { GithubIcon } from 'components/icons/GithubIcon'
+import { NetworkIcon } from 'components/icons/NetworkIcon'
 
-const Wrapper = styled.a`
+const Wrapper = styled.div`
   align-items: center;
   border-bottom: 3px solid transparent;
   color: #fff;
@@ -20,6 +20,7 @@ const Wrapper = styled.a`
 const Link = styled.span`
   align-items: center;
   display: flex;
+  height: 20px;
 `
 
 const Text = styled.span`
@@ -28,18 +29,14 @@ const Text = styled.span`
   margin-left: 6px;
 `
 
-export const GithubButton: React.FC = (props) => {
+export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
 
   return (
-    <Wrapper
-      {...restProps}
-      href="https://github.com/protofire/polkadot-mempool-explorer"
-      target="_blank"
-    >
+    <Wrapper {...restProps}>
       <Link>
-        <GithubIcon />
-        <Text>Github</Text>
+        <NetworkIcon />
+        <Text>Main Node</Text>
       </Link>
     </Wrapper>
   )

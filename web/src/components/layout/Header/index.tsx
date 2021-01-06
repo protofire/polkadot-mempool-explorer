@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { GithubButton } from 'components/common/GithubButton'
 import { Logo } from 'components/common/Logo'
+import { NodeButton } from 'components/common/NodeButton'
 import { InnerContainer } from 'components/pureStyledComponents/InnerContainer'
 
 const Wrapper = styled.header`
@@ -43,7 +44,17 @@ const LogoLink = styled.a`
 `
 
 const EndElements = styled.div`
+  align-items: center;
+  display: flex;
   height: 100%;
+`
+
+const Break = styled.div`
+  background-color: #fff;
+  height: 20px;
+  margin-left: 12px;
+  margin-right: 12px;
+  width: 1px;
 `
 
 export const Header: React.FC = (props) => {
@@ -55,6 +66,8 @@ export const Header: React.FC = (props) => {
         </LogoLink>
         <EndElements>
           <GithubButton />
+          <Break />
+          <NodeButton />
         </EndElements>
       </HeaderInnerContainer>
     </Wrapper>
