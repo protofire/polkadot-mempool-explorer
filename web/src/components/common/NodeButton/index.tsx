@@ -213,6 +213,9 @@ export const NodeButton: React.FC = (props) => {
   )
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [nodeName, setNodeName] = React.useState('')
+  const [nodeURL, setNodeURL] = React.useState('')
+  const buttonDisabled = !nodeName || !nodeURL
 
   return (
     <>
@@ -265,14 +268,27 @@ export const NodeButton: React.FC = (props) => {
       />
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add Node">
         <Row>
-          <TitleValue title="Node Name" value={<Textfield placeholder="A descriptive name…" />} />
+          <TitleValue
+            title="Node Name"
+            value={
+              <Textfield
+                onChange={(e) => setNodeName(e.currentTarget.value)}
+                placeholder="A descriptive name…"
+                value={nodeName}
+              />
+            }
+          />
         </Row>
         <Row>
           <TitleValue
             title="Node URL"
             value={
               <>
-                <Textfield placeholder="http(s)://yournodeurl…" />
+                <Textfield
+                  onChange={(e) => setNodeURL(e.currentTarget.value)}
+                  placeholder="http(s)://yournodeurl…"
+                  value={nodeURL}
+                />
                 <SmallNote>
                   <strong>Note:</strong> Transactions&apos; cache and other functionality could be
                   unavailable when you use a custom node.
@@ -282,7 +298,9 @@ export const NodeButton: React.FC = (props) => {
           />
         </Row>
         <ButtonContainer>
-          <Button onClick={() => setIsModalOpen(false)}>Add</Button>
+          <Button disabled={buttonDisabled} onClick={() => setIsModalOpen(false)}>
+            Add
+          </Button>
         </ButtonContainer>
       </Modal>
       <FullSpinner isWorking={isWorking} text="Loading selected node…" />
