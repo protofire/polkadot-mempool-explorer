@@ -23,10 +23,10 @@ export const App: React.FC = () => (
   <ThemeProvider theme={theme}>
     <GlobalStyle />
     <MainWrapper>
-      <Header />
-      <MainScroll>
-        <MainInnerContainer>
-          <Router>
+      <Router>
+        <Header />
+        <MainScroll>
+          <MainInnerContainer>
             <Switch>
               <Route component={Main} exact path="/main" />
               <Route exact path="/">
@@ -39,10 +39,10 @@ export const App: React.FC = () => (
                 </BaseCard>
               </Route>
             </Switch>
-          </Router>
-        </MainInnerContainer>
-        <Footer />
-      </MainScroll>
+          </MainInnerContainer>
+          <Footer />
+        </MainScroll>
+      </Router>
     </MainWrapper>
   </ThemeProvider>
 )

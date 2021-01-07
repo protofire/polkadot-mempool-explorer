@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { GithubButton } from 'components/common/GithubButton'
@@ -25,22 +26,8 @@ const HeaderInnerContainer = styled(InnerContainer)`
   justify-content: space-between;
 `
 
-const LogoLink = styled.a`
-  &.logoLink {
-    left: 50%;
-    position: absolute;
-    text-decoration: none;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    z-index: 1;
-
-    @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
-      left: auto;
-      position: relative;
-      top: auto;
-      transform: none;
-    }
-  }
+const LogoLink = styled(NavLink)`
+  display: block;
 `
 
 const EndElements = styled.div`
@@ -61,7 +48,7 @@ export const Header: React.FC = (props) => {
   return (
     <Wrapper className="siteHeader" {...props}>
       <HeaderInnerContainer>
-        <LogoLink className="logoLink" href="/">
+        <LogoLink className="logoLink" to="/main">
           <Logo />
         </LogoLink>
         <EndElements>

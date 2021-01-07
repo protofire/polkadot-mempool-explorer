@@ -21,10 +21,16 @@ const Wrapper = styled(BaseCard)`
 `
 
 const TopWrapper = styled.div`
-  align-items: center;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
 `
 
 const Row = styled.div`
@@ -36,6 +42,14 @@ const Row = styled.div`
 
 const TitleRow = styled(Row)`
   font-size: 15px;
+`
+
+const TitleRowBalance = styled(TitleRow)`
+  margin-bottom: 10px;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    margin-bottom: 5px;
+  }
 `
 
 const Label = styled.span`
@@ -99,12 +113,18 @@ const Time = styled.a`
 `
 
 const ValuesGrid = styled.div`
-  column-gap: 20px;
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
   margin-bottom: 17px;
+  row-gap: 5px;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    column-gap: 20px;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 0;
+  }
 
   &:last-child {
     margin-bottom: 0;
@@ -128,20 +148,31 @@ const BalanceTransferValue = styled(Value)`
 
 const BalanceTransfer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 50px 1fr;
+  grid-template-rows: 1fr 1fr;
+  max-width: 100%;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    grid-template-columns: 1fr 50px 1fr;
+    grid-template-rows: none;
+  }
 `
 
 const TransferSubject = styled.div`
   column-gap: 8px;
   display: grid;
   grid-template-columns: 32px 1fr;
+  max-width: 100%;
+  min-width: 0;
 `
 
 const TransferIconWrapper = styled.div`
-  display: flex;
+  display: none;
   align-items: center;
-  height: 100%;
   justify-content: center;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    display: flex;
+  }
 `
 const IdenticonCol = styled.div`
   padding-top: 5px;
@@ -157,7 +188,9 @@ const IdenticonWrapper = styled.div`
   }
 `
 
-const TransferInfo = styled.div``
+const TransferInfo = styled.div`
+  min-width: 0;
+`
 
 interface Props {
   data: any
@@ -231,10 +264,10 @@ export const Transaction: React.FC<Props> = (props) => {
       </ValuesGrid>
       {balanceTransfer && (
         <>
-          <TitleRow>
+          <TitleRowBalance>
             <Label>Balance Transfer</Label>
             <BalanceTransferValue>({balanceTransfer} DOT)</BalanceTransferValue>
-          </TitleRow>
+          </TitleRowBalance>
           <BalanceTransfer>
             <TransferSubject>
               <IdenticonCol>

@@ -11,6 +11,7 @@ const Wrapper = styled.a`
   cursor: pointer;
   display: flex;
   height: 22px;
+  flex-shrink: 0;
   justify-content: center;
   margin: 0;
   outline: none;

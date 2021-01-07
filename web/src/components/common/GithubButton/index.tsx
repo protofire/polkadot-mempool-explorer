@@ -7,13 +7,17 @@ const Wrapper = styled.a`
   align-items: center;
   border-bottom: 3px solid transparent;
   color: #fff;
-  display: flex;
+  display: none;
   height: 100%;
   text-decoration: none;
   transition: all 0.15s linear;
 
   &:hover {
     border-bottom-color: #fff;
+  }
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    display: flex;
   }
 `
 

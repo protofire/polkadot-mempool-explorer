@@ -18,9 +18,14 @@ const Wrapper = styled.footer`
 const Items = styled.ul`
   align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   list-style: none;
   margin: 0;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    flex-direction: row;
+  }
 `
 
 const TextCSS = css`
@@ -60,7 +65,12 @@ const ExternalLinkFlex = styled(ExternalLink)`
 `
 
 const Break = styled.span`
+  display: none;
   margin: 0 6px;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    display: block;
+  }
 
   &:after {
     content: '-';
