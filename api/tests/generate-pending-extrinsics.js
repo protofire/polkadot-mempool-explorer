@@ -20,7 +20,7 @@ async function main () {
   const alice = keyring.addFromUri('//Alice');
 
   // Create a extrinsic, transferring 12345 units to Bob
-  const transfer = api.tx.balances.transfer(BOB, 0.003);
+  const transfer = api.tx.balances.transfer(BOB, 12);
   
   // retrieve sender's next index/nonce, taking txs in the pool into account
   const nonce = await api.rpc.system.accountNextIndex(alice.address);

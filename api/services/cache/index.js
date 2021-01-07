@@ -26,7 +26,7 @@ class CacheService {
     const {
       hash, from, nonce, networkId,
     } = data;
-    const extrinsicKey = CacheService.getExtrinsicKey(hash, from, nonce, networkId);
+    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
 
     try {
       // Lock extrinsic and prevent update at the same time
@@ -75,14 +75,14 @@ class CacheService {
         (extrinsicKey) => JSON.parse(lruCache.get(extrinsicKey) || null),
       );
 
-      return extrinsics.filter((extrinsic) => extrinsic).reverse();
+      return extrinsics.reverse();
     }
 
     return [];
   }
 
   static async getExtrinsic(hash, from, nonce, networkId) {
-    const extrinsicKey = CacheService.getExtrinsicKey(hash, from, nonce, networkId);
+    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
 
     return JSON.parse(lruCache.get(extrinsicKey) || null);
   }
@@ -94,7 +94,7 @@ class CacheService {
   }
 
   static async setExtrinsic(hash, from, nonce, networkId, data) {
-    const extrinsicKey = CacheService.getExtrinsicKey(hash, from, nonce, networkId);
+    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
 
     lruCache.set(extrinsicKey, JSON.stringify(data));
   }
@@ -105,10 +105,17 @@ class CacheService {
     lruCache.set(networkKey, JSON.stringify(data));
   }
 
-  static async getPendingExtrinsics(networkId) {
+  static async getPendingExtrinsicHashes(networkId) {
     const extrinsics = await CacheService.getExtrinsics(networkId);
+    const hashes = [];
 
-    return extrinsics.filter((extrinsic) => !extrinsic.finalized);
+    extrinsics.forEach((extrinsic) => {
+      if (!extrinsic.finalized) {
+        hashes.push(extrinsic.hash);
+      }
+    });
+
+    return hashes;
   }
 
   static async setTokenSymbol(networkId, tokenSymbol = 'DOT') {
@@ -122,8 +129,16 @@ class CacheService {
 
     return lruCache.get(tokenSymbolKey);
   }
+  
+  static setOldestExtrinsicKey(networkId, hash, from, nonce) {
+    
+  }
+  
+  static getLastExtrinsicKey(networkId, hash, from, nonce) {
+    
+  }
 
-  static getExtrinsicKey(hash, from, nonce, networkId) {
+  static getExtrinsicKey(networkId, hash, from, nonce) {
     if (!hash || !from || !Number.isInteger(nonce) || !networkId) {
       throw new Error('You must provide a hash, from, nonce and networkId in order to save an extrinsic');
     }
