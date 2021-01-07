@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
 import { ItemPlaceholder } from 'components/common/ItemPlaceholder'
 import { Transaction } from 'components/common/Transaction'
+import { TransactionsSpinner } from 'components/common/TransactionsSpinner'
 import { SearchField } from 'components/form/SearchField'
 import { AllTransactions } from 'components/icons/AllTransactions'
 import { ChevronDown } from 'components/icons/ChevronDown'
@@ -99,21 +100,21 @@ export const Main: React.FC = (props) => {
   const titleDropdownItems = [
     {
       onClick: () => {
-        /* */
+        loadData()
       },
       text: 'All Transactions',
       icon: <AllTransactions />,
     },
     {
       onClick: () => {
-        /* */
+        loadData()
       },
       text: 'In Mempool',
       icon: <InMempool />,
     },
     {
       onClick: () => {
-        /* */
+        loadData()
       },
       text: 'Just Removed',
       icon: <JustRemoved />,
@@ -167,15 +168,21 @@ export const Main: React.FC = (props) => {
 
   const [isLoading, setIsLoading] = React.useState(true)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
+    setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
     }, 3000)
   }, [])
 
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
+
   return (
     <Wrapper {...restProps}>
       <SearchField
+        disabled={isLoading}
         dropdownItems={searchDropdownItems}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setSearchValue(e.currentTarget.value)
@@ -187,32 +194,36 @@ export const Main: React.FC = (props) => {
       />
       <PageTitle
         extraControls={
-          <Dropdown
-            activeItemHighlight={true}
-            currentItem={currentTitleDropdownItems}
-            dropdownButtonContent={
-              <TitleDropdownButton>
-                {titleDropdownItems[currentTitleDropdownItems].icon}
-                <TitleDropdownButtonText>
-                  {titleDropdownItems[currentTitleDropdownItems].text}
-                </TitleDropdownButtonText>
-                <ChevronDownStyled />
-              </TitleDropdownButton>
-            }
-            dropdownPosition={DropdownPosition.right}
-            items={titleDropdownItems.map((item, index) => (
-              <DropdownItem
-                key={index}
-                onClick={() => {
-                  item.onClick()
-                  setCurrentTitleDropdownItems(index)
-                }}
-              >
-                {item.icon}
-                <TitleDropdownItemText>{item.text}</TitleDropdownItemText>
-              </DropdownItem>
-            ))}
-          />
+          isLoading ? (
+            <TransactionsSpinner />
+          ) : (
+            <Dropdown
+              activeItemHighlight={true}
+              currentItem={currentTitleDropdownItems}
+              dropdownButtonContent={
+                <TitleDropdownButton>
+                  {titleDropdownItems[currentTitleDropdownItems].icon}
+                  <TitleDropdownButtonText>
+                    {titleDropdownItems[currentTitleDropdownItems].text}
+                  </TitleDropdownButtonText>
+                  <ChevronDownStyled />
+                </TitleDropdownButton>
+              }
+              dropdownPosition={DropdownPosition.right}
+              items={titleDropdownItems.map((item, index) => (
+                <DropdownItem
+                  key={index}
+                  onClick={() => {
+                    item.onClick()
+                    setCurrentTitleDropdownItems(index)
+                  }}
+                >
+                  {item.icon}
+                  <TitleDropdownItemText>{item.text}</TitleDropdownItemText>
+                </DropdownItem>
+              ))}
+            />
+          )
         }
       >
         Mempool Explorer

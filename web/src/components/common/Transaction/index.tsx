@@ -24,7 +24,7 @@ const TopWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 `
 
 const Row = styled.div`
@@ -105,7 +105,6 @@ const ValuesGrid = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   margin-bottom: 17px;
-  row-gap: 5px;
 
   &:last-child {
     margin-bottom: 0;

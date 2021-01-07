@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components'
 import { SpinnerSVG } from 'components/common/Spinner/img/SpinnerSVG'
 
 export enum SpinnerSize {
-  small = '24px',
+  small = '18px',
   regular = '40px',
   large = '60px',
 }

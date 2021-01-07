@@ -2,7 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Wrapper = styled.svg<{ opacity?: string }>`
+  display: block;
   margin-bottom: 15px;
+  width: 100%;
   opacity: ${(props) => (props.opacity ? props.opacity : '1')};
 
   .prefix__cls-2 {
@@ -19,9 +21,8 @@ export const ItemPlaceholder: React.FC<Props> = (props) => {
 
   return (
     <Wrapper
-      height="80"
       opacity={opacity}
-      width="1080"
+      viewBox="0 0 1080 80"
       xmlns="http://www.w3.org/2000/svg"
       {...restProps}
     >
