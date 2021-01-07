@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
+import { ItemPlaceholder } from 'components/common/ItemPlaceholder'
 import { Transaction } from 'components/common/Transaction'
 import { SearchField } from 'components/form/SearchField'
 import { AllTransactions } from 'components/icons/AllTransactions'
@@ -164,6 +165,14 @@ export const Main: React.FC = (props) => {
     },
   ]
 
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 3000)
+  }, [])
+
   return (
     <Wrapper {...restProps}>
       <SearchField
@@ -208,9 +217,13 @@ export const Main: React.FC = (props) => {
       >
         Mempool Explorer
       </PageTitle>
-      {transactions.map((item, index) => {
-        return <Transaction data={item} key={index} />
-      })}
+      {isLoading
+        ? [0, 1, 2, 3, 4, 5].map((index) => (
+            <ItemPlaceholder key={index} opacity={(1 - index * 0.15).toString()} />
+          ))
+        : transactions.map((item, index) => {
+            return <Transaction data={item} key={index} />
+          })}
     </Wrapper>
   )
 }
