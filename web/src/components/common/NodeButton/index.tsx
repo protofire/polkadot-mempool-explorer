@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
@@ -103,11 +103,16 @@ const ItemNameWrapper = styled.div`
   font-weight: 400;
   line-height: 1.2;
   margin-bottom: 2px;
-  overflow: hidden;
   position: relative;
+  width: 100%;
+  z-index: 1;
+`
+
+const ItemName = styled.div`
+  overflow: hidden;
+  padding-right: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  z-index: 1;
 `
 
 const ItemURL = styled.div`
@@ -118,6 +123,7 @@ const ItemURL = styled.div`
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
+  width: 100%;
   white-space: nowrap;
   z-index: 1;
 `
@@ -125,6 +131,7 @@ const ItemURL = styled.div`
 const NodeStatus = styled.div<{ isSelected?: boolean }>`
   background-color: ${(props) => (props.isSelected ? '#34b424' : '#a2a2a2')};
   border-radius: 50%;
+  flex-shrink: 0;
   height: 8px;
   margin-right: 6px;
   width: 8px;
@@ -132,6 +139,7 @@ const NodeStatus = styled.div<{ isSelected?: boolean }>`
 
 const ButtonDelete = styled.div`
   align-items: center;
+  cursor: pointer;
   display: flex;
   height: 20px;
   justify-content: center;
@@ -152,14 +160,15 @@ export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
   const [isWorking, setIsWorking] = React.useState(false)
 
-  const connectToNode = React.useCallback(() => {
+  const connectToNode = React.useCallback((index: number) => {
     setIsWorking(true)
+    setcurrentItem(index)
     setTimeout(() => {
       setIsWorking(false)
     }, 2000)
   }, [])
 
-  const dropdownItems = [
+  const [dropdownItems, setDropdownItems] = React.useState([
     {
       onClick: connectToNode,
       name: 'Main Node',
@@ -182,18 +191,25 @@ export const NodeButton: React.FC = (props) => {
     },
     {
       onClick: connectToNode,
-      name: 'Staging Node',
-      url: 'https://staging.dev',
+      name: 'Some long name to test the limits of this thing and a Staging Node',
+      url: 'https://sssssssssssssssssssssssssssssssssstaging.dev',
     },
-  ]
+  ])
   const [currentItem, setcurrentItem] = React.useState(0)
 
   const removeNode = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
       e.stopPropagation()
-      alert(`Removing node #${index}`)
+      if (confirm(`Remove ${dropdownItems[index].name}?`)) {
+        dropdownItems.splice(index, 1)
+        setDropdownItems([...dropdownItems])
+
+        if (index === currentItem) {
+          connectToNode(0)
+        }
+      }
     },
-    []
+    [connectToNode, currentItem, dropdownItems]
   )
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
@@ -218,7 +234,7 @@ export const NodeButton: React.FC = (props) => {
                 key={index}
                 onClick={() => {
                   if (typeof item.onClick === 'function' && currentItem !== index) {
-                    item.onClick()
+                    item.onClick(index)
                   }
                   setcurrentItem(index)
                 }}
@@ -226,10 +242,10 @@ export const NodeButton: React.FC = (props) => {
               >
                 <ItemNameWrapper>
                   <NodeStatus isSelected={currentItem === index} />
-                  {item.name}
+                  <ItemName>{item.name}</ItemName>
                 </ItemNameWrapper>
                 <ItemURL>{item.url}</ItemURL>
-                {currentItem !== index && index !== 0 && (
+                {index !== 0 && (
                   <ButtonDelete
                     onClick={(e) => {
                       removeNode(e, index)

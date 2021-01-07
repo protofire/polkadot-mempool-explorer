@@ -19,7 +19,7 @@ const rotate = keyframes`
 `
 
 const Wrapper = styled.div<{ size?: SpinnerSize | string | undefined }>`
-  animation: ${rotate} 2s linear infinite;
+  animation: ${rotate} 2.5s linear infinite;
   flex-grow: 0;
   flex-shrink: 0;
   height: ${(props) => props.size};
