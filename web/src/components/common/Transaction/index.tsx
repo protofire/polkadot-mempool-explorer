@@ -192,8 +192,20 @@ const TransferInfo = styled.div`
   min-width: 0;
 `
 
+interface DataType {
+  balanceTransfer?: string
+  blockNumber: string
+  extrinsicType: string
+  from?: string
+  nonce?: string
+  result: string
+  time: string
+  to?: string
+  txHash: string
+}
+
 interface Props {
-  data: any
+  data: DataType
 }
 
 export const Transaction: React.FC<Props> = (props) => {
@@ -262,7 +274,7 @@ export const Transaction: React.FC<Props> = (props) => {
           </Row>
         )}
       </ValuesGrid>
-      {balanceTransfer && (
+      {balanceTransfer && from && to && (
         <>
           <TitleRowBalance>
             <Label>Balance Transfer</Label>
