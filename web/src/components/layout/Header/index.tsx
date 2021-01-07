@@ -38,10 +38,15 @@ const EndElements = styled.div`
 
 const Break = styled.div`
   background-color: #fff;
+  display: none;
   height: 20px;
   margin-left: 12px;
   margin-right: 12px;
   width: 1px;
+
+  @media (min-width: ${(props) => props.theme.themeBreakPoints.md}) {
+    display: block;
+  }
 `
 
 export const Header: React.FC = (props) => {
