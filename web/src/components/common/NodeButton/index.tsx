@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
-import { FullSpinner } from 'components/common/FullSpinner'
+import { FullSpinner, ResultProps, ResultType } from 'components/common/FullSpinner'
 import { Modal } from 'components/common/Modal'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
@@ -159,13 +159,13 @@ const ButtonDelete = styled.div`
 export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
   const [isWorking, setIsWorking] = React.useState(false)
+  const [result, setResult] = React.useState<ResultProps>()
 
   const connectToNode = React.useCallback((index: number) => {
+    // let's simulate connecting to a node
     setIsWorking(true)
     setcurrentItem(index)
-    setTimeout(() => {
-      setIsWorking(false)
-    }, 2000)
+    setTimeout(() => setIsWorking(false), 2000)
   }, [])
 
   const [dropdownItems, setDropdownItems] = React.useState([
@@ -211,6 +211,21 @@ export const NodeButton: React.FC = (props) => {
     },
     [connectToNode, currentItem, dropdownItems]
   )
+
+  const addNode = React.useCallback(() => {
+    // let's simulate adding and connecting to a node
+    setIsModalOpen(false)
+    setIsWorking(true)
+    setTimeout(() => {
+      // let's simulate an error (there's no need to show anything if the
+      // operation is successful)
+      setResult({
+        message: 'There was a problem connecting to the node.',
+        onClick: () => setIsWorking(false),
+        resultType: ResultType.error,
+      })
+    }, 2000)
+  }, [])
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [nodeName, setNodeName] = React.useState('')
@@ -298,12 +313,12 @@ export const NodeButton: React.FC = (props) => {
           />
         </Row>
         <ButtonContainer>
-          <Button disabled={buttonDisabled} onClick={() => setIsModalOpen(false)}>
+          <Button disabled={buttonDisabled} onClick={addNode}>
             Add
           </Button>
         </ButtonContainer>
       </Modal>
-      <FullSpinner isWorking={isWorking} text="Loading selected node…" />
+      <FullSpinner isWorking={isWorking} result={result} text="Loading selected node…" />
     </>
   )
 }
