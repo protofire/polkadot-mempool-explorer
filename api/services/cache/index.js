@@ -129,14 +129,6 @@ class CacheService {
 
     return lruCache.get(tokenSymbolKey);
   }
-  
-  static setOldestExtrinsicKey(networkId, hash, from, nonce) {
-    
-  }
-  
-  static getLastExtrinsicKey(networkId, hash, from, nonce) {
-    
-  }
 
   static getExtrinsicKey(networkId, hash, from, nonce) {
     if (!hash || !from || !Number.isInteger(nonce) || !networkId) {

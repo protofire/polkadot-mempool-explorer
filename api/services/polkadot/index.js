@@ -86,26 +86,26 @@ class PolkadotService {
 
     return connections[networkId];
   }
-  
+
   /**
-   * 
-   * @param {*} networkId 
+   *
+   * @param {*} networkId
    */
   static getExtrinsicWatcher(networkId) {
     return extrinsicWatchers[networkId] || null;
   }
-  
+
   /**
-   * 
-   * @param {*} networkId 
+   *
+   * @param {*} networkId
    */
   static getNewHeadWatcher(networkId) {
     return newHeadWatchers[networkId] || null;
   }
-  
+
   /**
-   * 
-   * @param {*} networkId 
+   *
+   * @param {*} networkId
    */
   static async hasTrackExtrinsicMethod(networkId) {
     const api = await PolkadotService.connect(networkId);
@@ -114,8 +114,8 @@ class PolkadotService {
   }
 
   /**
-   * 
-   * @param {*} networkId 
+   *
+   * @param {*} networkId
    */
   static async resetWatchPendingExtrinsics(networkId) {
     const unsubExtrinsic = PolkadotService.getExtrinsicWatcher(networkId);
@@ -237,11 +237,11 @@ class PolkadotService {
   }
 
   /**
-   * 
-   * @param {*} networkId 
-   * @param {*} hash 
-   * @param {*} from 
-   * @param {*} nonce 
+   *
+   * @param {*} networkId
+   * @param {*} hash
+   * @param {*} from
+   * @param {*} nonce
    */
   static async trackExtrinsic(networkId, hash, from, nonce) {
     const api = await PolkadotService.connect(networkId);
@@ -314,11 +314,11 @@ class PolkadotService {
   }
 
   /**
-   * 
-   * @param {*} networkId 
-   * @param {*} hash 
-   * @param {*} from 
-   * @param {*} nonce 
+   *
+   * @param {*} networkId
+   * @param {*} hash
+   * @param {*} from
+   * @param {*} nonce
    */
   static async watchNewHeads(networkId) {
     if (!PolkadotService.getNewHeadWatcher(networkId)) {
@@ -331,14 +331,11 @@ class PolkadotService {
         const { block } = await api.rpc.chain.getBlock(blockHash);
         const blockEvents = await api.query.system.events.at(header.hash);
         const rows = [];
-        
+
         // map between the extrinsics and events
         block.extrinsics.forEach((extrinsic, index) => {
           const hash = extrinsic.hash.toString();
 
-          console.log('pendingExtrinsicHashes ======>', pendingExtrinsicHashes);
-          console.log('hash ======>', hash);
-          
           if (pendingExtrinsicHashes.includes(hash)) {
             const data = {
               hash,
@@ -352,14 +349,12 @@ class PolkadotService {
               events: [],
               updateAt: Date.now(),
             };
-            
+
             // filter the specific events based on the phase and then the
             // index of our extrinsic in the block
             data.events = blockEvents
-              .filter(({ phase }) =>
-                phase.isApplyExtrinsic &&
-                phase.asApplyExtrinsic.eq(index)
-              )
+              .filter(({ phase }) => phase.isApplyExtrinsic
+                && phase.asApplyExtrinsic.eq(index))
               .map(({ event }) => {
                 if (api.events.system.ExtrinsicSuccess.is(event)) {
                   data.success = true;
@@ -373,13 +368,13 @@ class PolkadotService {
                   method: event.section.toString(),
                   section: event.method.toString(),
                   data: event.data.toHuman(),
-                }
+                };
               });
 
             rows.push(data);
           }
         });
-        
+
         try {
           // Update extrinsics
           await Promise.all(rows.map((row) => CacheService.upsertExtrinsic(row)));
