@@ -8,6 +8,7 @@ import { ErrorIcon } from 'components/icons/ErrorIcon'
 import { TimeIcon } from 'components/icons/TimeIcon'
 import { TransferArrow } from 'components/icons/TransferArrow'
 import { BaseCard } from 'components/pureStyledComponents/BaseCard'
+import { Transaction as ExtrinsicModel } from 'contexts/ExplorerContext'
 import Identicon from 'react-hooks-identicons'
 
 const Wrapper = styled(BaseCard)`
@@ -192,35 +193,25 @@ const TransferInfo = styled.div`
   min-width: 0;
 `
 
-interface DataType {
-  balanceTransfer?: string
-  blockNumber: string
-  extrinsicType: string
-  from?: string
-  nonce?: string
-  result: string
-  time: string
-  to?: string
-  txHash: string
-}
-
 interface Props {
-  data: DataType
+  data: ExtrinsicModel
 }
 
 export const Transaction: React.FC<Props> = (props) => {
   const { data, ...restProps } = props
   const {
-    balanceTransfer,
-    blockNumber,
-    extrinsicType,
+    balance_transfer: balanceTransfer,
+    block_number: blockNumber,
     from,
+    hash,
+    isFinalized,
+    isValid,
     nonce,
-    result,
-    time,
     to,
-    txHash,
+    type,
+    update_at: updateAt,
   } = data
+  const result = isValid ? 'Valid' : 'Invalid'
   const explorerURL = 'https://polkadot.subscan.io/'
   const blockURL = `${explorerURL}block/`
   const accountURL = `${explorerURL}account/`
@@ -230,55 +221,46 @@ export const Transaction: React.FC<Props> = (props) => {
       <TopWrapper>
         <TitleRow>
           <Label>Tx Hash:</Label>
-          <LinkValue href={`${blockURL}${txHash}`} target="_blank">
-            {txHash}
+          <LinkValue href={`${blockURL}${hash}`} target="_blank">
+            {hash}
           </LinkValue>
-          <ButtonCopy value={txHash} />
-          <ButtonExternalLink href={`${blockURL}${txHash}`} style={{ marginLeft: '2px' }} />
+          <ButtonCopy value={hash} />
+          <ButtonExternalLink href={`${blockURL}${hash}`} style={{ marginLeft: '2px' }} />
         </TitleRow>
         <TimeWrapper>
           <TimeIcon />
-          <Time href={`${blockURL}${txHash}`} target="_blank">
-            {time}
+          <Time href={`${blockURL}${hash}`} target="_blank">
+            {updateAt}
           </Time>
         </TimeWrapper>
       </TopWrapper>
       <ValuesGrid>
-        {blockNumber && (
-          <Row>
-            <Label>Block Number:</Label>
-            <LinkValue href={`${blockURL}${blockNumber}`} target="_blank">
-              #{blockNumber}
-            </LinkValue>
-            <ButtonExternalLinkMini href={`${blockURL}${blockNumber}`} />
-          </Row>
-        )}
-        {nonce && (
-          <Row>
-            <Label>Nonce:</Label>
-            <Value>{nonce}</Value>
-          </Row>
-        )}
-        {extrinsicType && (
-          <Row>
-            <Label>Extrinsic Type:</Label>
-            <Value>{extrinsicType}</Value>
-          </Row>
-        )}
-        {result && (
-          <Row>
-            <Label>Result:</Label>
-            <Value style={{ textTransform: 'capitalize' }}>{result}</Value>
-            {result === 'valid' && <CheckIcon />}
-            {result === 'invalid' && <ErrorIcon />}
-          </Row>
-        )}
+        <Row>
+          <Label>Block Number:</Label>
+          <LinkValue href={`${blockURL}${blockNumber}`} target="_blank">
+            #{blockNumber}
+          </LinkValue>
+          <ButtonExternalLinkMini href={`${blockURL}${blockNumber}`} />
+        </Row>
+        <Row>
+          <Label>Nonce:</Label>
+          <Value>{nonce}</Value>
+        </Row>
+        <Row>
+          <Label>Extrinsic Type:</Label>
+          <Value>{type}</Value>
+        </Row>
+        <Row>
+          <Label>Result:</Label>
+          <Value style={{ textTransform: 'capitalize' }}>{result}</Value>
+          {isValid ? <CheckIcon /> : <ErrorIcon />}
+        </Row>
       </ValuesGrid>
       {balanceTransfer && from && to && (
         <>
           <TitleRowBalance>
             <Label>Balance Transfer</Label>
-            <BalanceTransferValue>({balanceTransfer} DOT)</BalanceTransferValue>
+            <BalanceTransferValue>({balanceTransfer})</BalanceTransferValue>
           </TitleRowBalance>
           <BalanceTransfer>
             <TransferSubject>

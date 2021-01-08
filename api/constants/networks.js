@@ -27,11 +27,11 @@ const TEST_NETWORKS = [
 ];
 
 const LOCAL_NETWORKS = [
-  {
-    id: 'local',
-    name: 'Local',
-    url: 'ws://127.0.0.1:9944',
-  },
+  // {
+  //   id: 'local',
+  //   name: 'Local',
+  //   url: 'ws://127.0.0.1:9944',
+  // },
 ];
 
 const DEV_NETWORKS = [

@@ -9,6 +9,7 @@ import { CardText } from 'components/pureStyledComponents/CardText'
 import { InnerContainer } from 'components/pureStyledComponents/InnerContainer'
 import { MainScroll } from 'components/pureStyledComponents/MainScroll'
 import { MainWrapper } from 'components/pureStyledComponents/MainWrapper'
+import { ExplorerProvider } from 'contexts/ExplorerContext'
 import { Main } from 'pages/Main'
 import theme from 'theme'
 import { GlobalStyle } from 'theme/globalStyle'
@@ -22,27 +23,29 @@ const MainInnerContainer = styled(InnerContainer)`
 export const App: React.FC = () => (
   <ThemeProvider theme={theme}>
     <GlobalStyle />
-    <MainWrapper>
-      <Router>
-        <Header />
-        <MainScroll>
-          <MainInnerContainer>
-            <Switch>
-              <Route component={Main} exact path="/main" />
-              <Route exact path="/">
-                <Redirect to="/main" />
-              </Route>
-              <Route path="*">
-                <BaseCard>
-                  <CardSubtitle>Error 404</CardSubtitle>
-                  <CardText>Page not found...</CardText>
-                </BaseCard>
-              </Route>
-            </Switch>
-          </MainInnerContainer>
-          <Footer />
-        </MainScroll>
-      </Router>
-    </MainWrapper>
+    <ExplorerProvider>
+      <MainWrapper>
+        <Router>
+          <Header />
+          <MainScroll>
+            <MainInnerContainer>
+              <Switch>
+                <Route component={Main} exact path="/main" />
+                <Route exact path="/">
+                  <Redirect to="/main" />
+                </Route>
+                <Route path="*">
+                  <BaseCard>
+                    <CardSubtitle>Error 404</CardSubtitle>
+                    <CardText>Page not found...</CardText>
+                  </BaseCard>
+                </Route>
+              </Switch>
+            </MainInnerContainer>
+            <Footer />
+          </MainScroll>
+        </Router>
+      </MainWrapper>
+    </ExplorerProvider>
   </ThemeProvider>
 )

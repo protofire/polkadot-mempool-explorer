@@ -11,6 +11,7 @@ import { ChevronDown } from 'components/icons/ChevronDown'
 import { InMempool } from 'components/icons/InMempool'
 import { JustRemoved } from 'components/icons/JustRemoved'
 import { PageTitle } from 'components/text/PageTitle'
+import useMempoolExplorer from 'hooks/useMempoolExplorer'
 
 const Wrapper = styled.div``
 
@@ -100,89 +101,33 @@ export const Main: React.FC = (props) => {
   const titleDropdownItems = [
     {
       onClick: () => {
-        loadData()
+        console.log('pase')
       },
       text: 'All Transactions',
       icon: <AllTransactions />,
     },
     {
       onClick: () => {
-        loadData()
+        console.log('pase')
       },
       text: 'In Mempool',
       icon: <InMempool />,
     },
     {
       onClick: () => {
-        loadData()
+        console.log('pase')
       },
       text: 'Just Removed',
       icon: <JustRemoved />,
     },
   ]
   const [currentTitleDropdownItems, setCurrentTitleDropdownItems] = React.useState(0)
-
-  const transactions = [
-    {
-      balanceTransfer: '1000.00',
-      blockNumber: '2826376',
-      extrinsicType: 'Signed Transaction',
-      from: '12vCR1Sft2YHzgmtojLLDD4recFbFMUAfg6pKavW48FZYKtK',
-      inMempool: true,
-      nonce: '0',
-      result: 'valid',
-      time: 'Dec 9, 2020, 3:30:42 PM',
-      to: '1WcFohjQoCfuqHhZK3vPpkgSv4ebHHwGDjuNG1jbz97kfnJ',
-      txHash: '0xedcf1c01ed167f662bd64b7a68f6cfa16f5c23b126d82f3ee958226aacbbd3a1',
-    },
-    {
-      blockNumber: '2826374',
-      extrinsicType: 'Inherit',
-      inMempool: true,
-      nonce: '0',
-      result: 'valid',
-      time: 'Dec 9, 2020, 2:54:15 PM',
-      txHash: '0x219dd50cc7122234749d3fcaa3d1d160eb394b3927c4941ea4e910588c1f05fc',
-    },
-    {
-      balanceTransfer: '1.55',
-      blockNumber: '2826373',
-      extrinsicType: 'Signed Transaction',
-      from: '14Kazg6SFiUCH7FNhvBhvr4WNfAXVtKKKhtBQ1pvXzF1dQhv',
-      inMempool: false,
-      nonce: '0',
-      result: 'invalid',
-      time: 'Dec 9, 2020, 2:49:13 PM',
-      to: '1WcFohjQoCfuqHhZK3vPpkgSv4ebHHwGDjuNG1jbz97kfnJ',
-      txHash: '0x59a764f8f56fb3614965adb2a9bebe69ec9d606a9a586c8b81845526f8f7259e',
-    },
-    {
-      blockNumber: '2826372',
-      extrinsicType: 'Unsigned Transaction',
-      inMempool: false,
-      result: 'valid',
-      time: 'Dec 9, 2020, 2:47:05 PM',
-      txHash: '0x5d6d2bb34e3407045e630baeb6705bae837d52138e9af7639a8f95bcdb6a07ec',
-    },
-  ]
-
-  const [isLoading, setIsLoading] = React.useState(true)
-
-  const loadData = React.useCallback(() => {
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
-  }, [])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
+  const { isLoadingTransactions, selectedNetwork, transactions } = useMempoolExplorer()
 
   return (
     <Wrapper {...restProps}>
       <SearchField
-        disabled={isLoading}
+        disabled={isLoadingTransactions}
         dropdownItems={searchDropdownItems}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setSearchValue(e.currentTarget.value)
@@ -194,7 +139,7 @@ export const Main: React.FC = (props) => {
       />
       <PageTitle
         extraControls={
-          isLoading ? (
+          isLoadingTransactions ? (
             <TransactionsSpinner />
           ) : (
             <Dropdown
@@ -228,7 +173,7 @@ export const Main: React.FC = (props) => {
       >
         Mempool Explorer
       </PageTitle>
-      {isLoading
+      {isLoadingTransactions && transactions.length < 1
         ? [0, 1, 2, 3, 4, 5].map((index) => (
             <ItemPlaceholder key={index} opacity={(1 - index * 0.15).toString()} />
           ))

@@ -22,7 +22,7 @@ const newHeadWatchers = {};
 
 class PolkadotService {
   static getNetworks() {
-    const local = LOCAL_NETWORKS;
+    const local = [...LOCAL_NETWORKS];
 
     if (!PRODUCTION) {
       local.push(...DEV_NETWORKS);

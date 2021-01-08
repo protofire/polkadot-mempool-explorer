@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@types/styled-components": "^5.1.7",
+    "axios": "^0.21.1",
     "husky": "^4.3.6",
     "polished": "^4.0.5",
     "react": "^17.0.1",

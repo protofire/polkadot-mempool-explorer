@@ -13,6 +13,7 @@ import { Row } from 'components/pureStyledComponents/Row'
 import { SmallNote } from 'components/pureStyledComponents/SmallNote'
 import { Textfield } from 'components/pureStyledComponents/Textfield'
 import { TitleValue } from 'components/text/TitleValue'
+import useMempoolExplorer from 'hooks/useMempoolExplorer'
 
 const CustomDropdown = styled(Dropdown)`
   &,
@@ -159,58 +160,24 @@ const ButtonDelete = styled.div`
 export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
   const [isWorking, setIsWorking] = React.useState(false)
-  const [result, setResult] = React.useState<ResultProps>()
-
-  const connectToNode = React.useCallback((index: number) => {
-    // let's simulate connecting to a node
-    setIsWorking(true)
-    setcurrentItem(index)
-    setTimeout(() => setIsWorking(false), 2000)
-  }, [])
-
-  const [dropdownItems, setDropdownItems] = React.useState([
-    {
-      onClick: connectToNode,
-      name: 'Main Node',
-      url: 'https://mainnodeurl.com',
-    },
-    {
-      onClick: connectToNode,
-      name: 'Local Node',
-      url: 'https://localnode:3000',
-    },
-    {
-      onClick: connectToNode,
-      name: 'Secondary Node',
-      url: 'https://someserver.net',
-    },
-    {
-      onClick: connectToNode,
-      name: 'Development Node',
-      url: 'https://someserver.dev',
-    },
-    {
-      onClick: connectToNode,
-      name: 'Some long name to test the limits of this thing and a Staging Node',
-      url: 'https://sssssssssssssssssssssssssssssssssstaging.dev',
-    },
-  ])
   const [currentItem, setcurrentItem] = React.useState(0)
+  const [result, setResult] = React.useState<ResultProps>()
+  const {
+    apiError,
+    deleteNetwork,
+    isLoadingNetworks,
+    networks,
+    selectNetwork,
+    selectedNetwork,
+  } = useMempoolExplorer()
 
-  const removeNode = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
-      e.stopPropagation()
-      if (confirm(`Remove ${dropdownItems[index].name}?`)) {
-        dropdownItems.splice(index, 1)
-        setDropdownItems([...dropdownItems])
-
-        if (index === currentItem) {
-          connectToNode(0)
-        }
-      }
-    },
-    [connectToNode, currentItem, dropdownItems]
-  )
+  if (apiError) {
+    setResult({
+      message: apiError,
+      onClick: () => ({}),
+      resultType: ResultType.error,
+    })
+  }
 
   const addNode = React.useCallback(() => {
     // let's simulate adding and connecting to a node
@@ -236,37 +203,35 @@ export const NodeButton: React.FC = (props) => {
     <>
       <CustomDropdown
         activeItemHighlight={true}
-        currentItem={currentItem}
         dropdownButtonContent={
           <DropdownButton>
             <NetworkIcon />
-            <Text>Main Node</Text>
+            <Text>{selectedNetwork.name}</Text>
             <ChevronDownStyled />
           </DropdownButton>
         }
         dropdownPosition={DropdownPosition.right}
         items={[
           <ItemsWrapper key="ItemsWrapper">
-            {dropdownItems.map((item, index) => (
+            {networks.map((item, index) => (
               <CustomDropdownItem
                 key={index}
-                onClick={() => {
-                  if (typeof item.onClick === 'function' && currentItem !== index) {
-                    item.onClick(index)
-                  }
-                  setcurrentItem(index)
-                }}
-                unClickable={currentItem === index}
+                onClick={() => selectNetwork(item)}
+                unClickable={selectedNetwork.id === item.id}
               >
                 <ItemNameWrapper>
-                  <NodeStatus isSelected={currentItem === index} />
+                  <NodeStatus isSelected={selectedNetwork.id === item.id} />
                   <ItemName>{item.name}</ItemName>
                 </ItemNameWrapper>
                 <ItemURL>{item.url}</ItemURL>
                 {index !== 0 && (
                   <ButtonDelete
                     onClick={(e) => {
-                      removeNode(e, index)
+                      e.stopPropagation()
+
+                      if (confirm(`Remove ${item.name}?`)) {
+                        deleteNetwork(item.id)
+                      }
                     }}
                   >
                     <RemoveIcon />
@@ -318,7 +283,7 @@ export const NodeButton: React.FC = (props) => {
           </Button>
         </ButtonContainer>
       </Modal>
-      <FullSpinner isWorking={isWorking} result={result} text="Loading selected node…" />
+      <FullSpinner isWorking={isLoadingNetworks} result={result} text="Loading selected node…" />
     </>
   )
 }
