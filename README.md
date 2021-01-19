@@ -6,33 +6,69 @@ Mempool Explorer allow users to monitor pending transactions on [Polkadot](https
 
  - Install [Node.js](https://nodejs.org/)
    - Recommended method is by using [NVM](https://github.com/creationix/nvm)
-   - Recommended Node.js version is v14
- - Run `nvm use` to use project node version.
- - Run `npm ci` to install the project dependencies
+   - Recommended Node.js version is v12
+ - Install [Docker](https://docs.docker.com/get-docker/)
+
+## Demo
+
+[https://mempool.dot.protofire.io](https://mempool.dot.protofire.io)
 
 ## Development
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm start:dev`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the docker containers in the development mode.\
+Open [http://localhost:8084](http://localhost:8084) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
+### `npm down`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Stops containers and removes containers, networks, volumes, and images created by `npm start:dev`
 
-### `npm run build`
+### `npm restart`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Restarts `api` and `web` services.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `npm logs`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Displays log output from all services.
+
+### `npm web:rebuild`
+
+Removes `web` container and build it again
+
+### `npm api:rebuild`
+
+Removes `api` container and build it again
+
+### `npm api:restart`
+
+Restarts `api` service.
+
+### `npm web:restart`
+
+Restarts `web` service.
+
+### `npm api:logs`
+
+Displays log output from `api` service.
+
+### `npm web:logs`
+
+Displays log output from `web` service.
+
+### `npm polkadot-local:logs`
+
+Displays log output from custom `polkadot-local` service.
+
+### `npm polkadot-westend:logs`
+
+Displays log output from custom `polkadot-westend` service.
+
+### `npm polkadot-main:logs`
+
+Displays log output from custom `polkadot-main` service.
