@@ -60,69 +60,94 @@ const ChevronDownStyled = styled(ChevronDown)`
 
 export const Main: React.FC = (props) => {
   const { ...restProps } = props
+  const titleDropdownItems = [
+    {
+      onClick: () => setTransactionState('all'),
+      text: 'All Transactions',
+      icon: <AllTransactions />,
+    },
+    {
+      onClick: () => setTransactionState('inMempool'),
+      text: 'In Mempool',
+      icon: <InMempool />,
+    },
+    {
+      onClick: () => setTransactionState('justRemoved'),
+      text: 'Just Removed',
+      icon: <JustRemoved />,
+    },
+  ]
   const searchDropdownItems = [
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: () => setSearchBy('all'),
       placeholder: 'Search transactions by Tx Hash, Block #, From Address, To Address…',
       text: 'All',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: () => setSearchBy('tx'),
       placeholder: 'Search transactions by Tx Hash.',
       text: 'Tx Hash',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: () => setSearchBy('block'),
       placeholder: 'Search transactions by Block #',
       text: 'Block #',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: () => setSearchBy('from'),
       placeholder: 'Search transactions by From Address.',
       text: 'From Address',
     },
     {
-      onClick: () => {
-        /* */
-      },
+      onClick: () => setSearchBy('to'),
       placeholder: 'Search transactions by To Address.',
       text: 'To Address',
     },
   ]
   const [searchValue, setSearchValue] = React.useState('')
-  const titleDropdownItems = [
-    {
-      onClick: () => {
-        console.log('pase')
-      },
-      text: 'All Transactions',
-      icon: <AllTransactions />,
-    },
-    {
-      onClick: () => {
-        console.log('pase')
-      },
-      text: 'In Mempool',
-      icon: <InMempool />,
-    },
-    {
-      onClick: () => {
-        console.log('pase')
-      },
-      text: 'Just Removed',
-      icon: <JustRemoved />,
-    },
-  ]
+  const [searchBy, setSearchBy] = React.useState('all')
+  const [transactionState, setTransactionState] = React.useState('')
   const [currentTitleDropdownItems, setCurrentTitleDropdownItems] = React.useState(0)
-  const { isLoadingTransactions, selectedNetwork, transactions } = useMempoolExplorer()
+  const { isLoadingTransactions, transactions } = useMempoolExplorer()
+  let filterTransactions = transactions
+
+  if (searchValue !== '') {
+    filterTransactions = filterTransactions.filter((transaction) => {
+      switch (searchBy) {
+        case 'tx':
+          return transaction.hash === searchValue
+        case 'block':
+          return transaction.block_number === searchValue
+        case 'from':
+          return transaction.from === searchValue
+        case 'to':
+          return transaction.to === searchValue
+        default:
+          return [
+            transaction.hash,
+            transaction.block_number,
+            transaction.from,
+            transaction.to,
+          ].includes(searchValue)
+      }
+    })
+  }
+
+  if (transactionState !== 'all') {
+    filterTransactions = filterTransactions.filter((transaction) => {
+      if (transactionState === 'inMempool' && transaction.isFinalized) {
+        return false
+      } else if (transactionState === 'inMempool' && !transaction.isFinalized) {
+        return true
+      } else if (transactionState === 'justRemoved' && transaction.isFinalized) {
+        return true
+      } else if (transactionState === 'justRemoved' && !transaction.isFinalized) {
+        return false
+      } else {
+        return true
+      }
+    })
+  }
 
   return (
     <Wrapper {...restProps}>
@@ -173,11 +198,11 @@ export const Main: React.FC = (props) => {
       >
         Mempool Explorer
       </PageTitle>
-      {isLoadingTransactions && transactions.length < 1
+      {isLoadingTransactions && filterTransactions.length < 1
         ? [0, 1, 2, 3, 4, 5].map((index) => (
             <ItemPlaceholder key={index} opacity={(1 - index * 0.15).toString()} />
           ))
-        : transactions.map((item, index) => {
+        : filterTransactions.map((item, index) => {
             return <Transaction data={item} key={index} />
           })}
     </Wrapper>

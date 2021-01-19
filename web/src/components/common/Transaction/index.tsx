@@ -19,6 +19,14 @@ const Wrapper = styled(BaseCard)`
   &:last-child {
     margin-bottom: 0;
   }
+
+  &.inMempool {
+    border-left: 6px solid ${(props) => props.theme.colors.primary};
+  }
+
+  &.justRemoved {
+    border-left: 6px solid ${(props) => props.theme.colors.mediumGrey};
+  }
 `
 
 const TopWrapper = styled.div`
@@ -217,7 +225,7 @@ export const Transaction: React.FC<Props> = (props) => {
   const accountURL = `${explorerURL}account/`
 
   return (
-    <Wrapper {...restProps}>
+    <Wrapper {...restProps} className={isFinalized ? 'justRemoved' : 'inMempool'}>
       <TopWrapper>
         <TitleRow>
           <Label>Tx Hash:</Label>
@@ -235,13 +243,15 @@ export const Transaction: React.FC<Props> = (props) => {
         </TimeWrapper>
       </TopWrapper>
       <ValuesGrid>
-        <Row>
-          <Label>Block Number:</Label>
-          <LinkValue href={`${blockURL}${blockNumber}`} target="_blank">
-            #{blockNumber}
-          </LinkValue>
-          <ButtonExternalLinkMini href={`${blockURL}${blockNumber}`} />
-        </Row>
+        {blockNumber !== '' && (
+          <Row>
+            <Label>Block Number:</Label>
+            <LinkValue href={`${blockURL}${blockNumber}`} target="_blank">
+              #{blockNumber}
+            </LinkValue>
+            <ButtonExternalLinkMini href={`${blockURL}${blockNumber}`} />
+          </Row>
+        )}
         <Row>
           <Label>Nonce:</Label>
           <Value>{nonce}</Value>

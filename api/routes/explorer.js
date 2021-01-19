@@ -28,7 +28,7 @@ router.get('/networks', (req, res) => {
   } catch (err) {
     logger.error({ err }, 'Error getting networks');
 
-    res.send(internalServer.code, internalServer);
+    res.status(internalServer.code).send(internalServer);
   }
 });
 
@@ -40,7 +40,7 @@ router.get('/networks/:networkId/reset', async (req, res) => {
   } catch (err) {
     logger.error({ err }, 'Error resetting netwotk');
 
-    res.send(internalServer.code, internalServer);
+    res.status(internalServer.code).send(internalServer);
   }
 });
 
@@ -68,7 +68,7 @@ router.get('/transactions/:networkId', async (req, res) => {
         hash: extrinsic.hash,
         update_at: moment(extrinsic.updateAt).format(DATE_FORMAT),
         create_at: moment(extrinsic.createAt).format(DATE_FORMAT),
-        block_number: extrinsic.block.number,
+        block_number: extrinsic.block.number !== 0 ? extrinsic.block.number : '',
         type,
         nonce: extrinsic.nonce,
         tip: extrinsic.tip,
@@ -88,7 +88,7 @@ router.get('/transactions/:networkId', async (req, res) => {
   } catch (err) {
     logger.error({ err }, 'Error getting transactions');
 
-    res.send(internalServer.code, internalServer);
+    res.status(internalServer.code).send(internalServer);
   }
 });
 

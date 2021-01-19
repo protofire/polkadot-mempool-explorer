@@ -7,6 +7,11 @@
   "dependencies": {
     "@types/styled-components": "^5.1.7",
     "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "helmet": "^4.3.1",
+    "hpp": "^0.2.3",
     "husky": "^4.3.6",
     "polished": "^4.0.5",
     "react": "^17.0.1",
@@ -44,7 +49,7 @@
     "typescript": "^4.1.2"
   },
   "scripts": {
-    "build": "NODE_ENV=production react-scripts build",
+    "build": "NODE_ENV=production INLINE_RUNTIME_CHUNK=false react-scripts build",
     "eject": "react-scripts eject",
     "lint:check": "eslint './src/**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint:check -- --fix",
@@ -53,6 +58,7 @@
     "prettier:check": "npm run prettier -- --check",
     "prettier:fix": "npm run prettier -- --write",
     "start": "NODE_ENV=development react-scripts start",
+    "start:prod": "NODE_ENV=production node server.js",
     "test": "NODE_ENV=test react-scripts test"
   },
   "lint-staged": {

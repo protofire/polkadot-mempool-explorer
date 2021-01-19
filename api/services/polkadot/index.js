@@ -8,6 +8,7 @@ const {
   TEST_NETWORKS,
   LOCAL_NETWORKS,
   DEV_NETWORKS,
+  CUSTOM_NETWORKS,
 } = require('../../constants/networks');
 const logger = require('../../logger');
 const {
@@ -23,14 +24,15 @@ const newHeadWatchers = {};
 class PolkadotService {
   static getNetworks() {
     const local = [...LOCAL_NETWORKS];
+    const live = [...LIVE_NETWORKS, ...CUSTOM_NETWORKS];
 
     if (!PRODUCTION) {
       local.push(...DEV_NETWORKS);
     }
 
     return {
-      live: LIVE_NETWORKS,
       test: TEST_NETWORKS,
+      live,
       local,
     };
   }

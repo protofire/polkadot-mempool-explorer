@@ -52,6 +52,19 @@ const DEV_NETWORKS = [
   },
 ];
 
+const CUSTOM_NETWORKS = [
+  {
+    id: 'polkadot-custom',
+    name: 'Polkadot Custom',
+    url: 'ws://polkadot-polkadot-custom-node:9944',
+  },
+  {
+    id: 'westend2-custom',
+    name: 'Westend Custom',
+    url: 'ws://polkadot-westend-custom-node:9944',
+  },
+];
+
 /**
  * Expose Networks
  */
@@ -61,4 +74,5 @@ module.exports = {
   TEST_NETWORKS,
   LOCAL_NETWORKS,
   DEV_NETWORKS,
+  CUSTOM_NETWORKS,
 };

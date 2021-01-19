@@ -26,14 +26,17 @@ class CacheService {
     const {
       hash, from, nonce, networkId,
     } = data;
-    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
 
+    // Lock network and prevent update at the same time
+    let extrinsicKeys = await lock.acquire(networkId);
+    
     try {
-      // Lock extrinsic and prevent update at the same time
-      await lock.acquire(extrinsicKey);
+      if (!extrinsicKeys) {
+        extrinsicKeys = await CacheService.getNetworkExtrinsicKeys(networkId);  
+      }
 
+      const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
       const extrinsic = new ExtrinsicModel();
-      const extrinsicKeys = await CacheService.getNetworkExtrinsicKeys(networkId);
       const cacheExtrinsic = await CacheService.getExtrinsic(hash, from, nonce, networkId);
 
       // Check if extrinsic is already on cache and update the local instance of ExtrinsicModel
@@ -62,7 +65,7 @@ class CacheService {
 
       return null;
     } finally {
-      lock.release(extrinsicKey);
+      lock.release(networkId, extrinsicKeys);
     }
   }
 
@@ -75,7 +78,13 @@ class CacheService {
         (extrinsicKey) => JSON.parse(lruCache.get(extrinsicKey) || null),
       );
 
-      return extrinsics.reverse();
+      return extrinsics.sort((a, b) => {
+        if (a.createAt < b.createAt)
+          return -1;
+        if (a.createAt > b.createAt)
+          return 1;
+        return 0;
+      });
     }
 
     return [];

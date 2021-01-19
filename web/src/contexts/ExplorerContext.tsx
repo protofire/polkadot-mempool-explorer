@@ -226,7 +226,7 @@ export const ExplorerProvider: React.FC = ({ children }) => {
 
     const interval = setInterval(async () => {
       getTransactions(state.selectedNetwork.id)
-    }, 10000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [state.selectedNetwork])
 
