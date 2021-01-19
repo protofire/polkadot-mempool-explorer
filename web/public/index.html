@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Polkadot Mempool Explorer</title>
+    <link
+      rel="icon"
+      href="%PUBLIC_URL%/favicon/favicon-32.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      href="%PUBLIC_URL%/favicon/favicon-152.png"
+    />
+    <meta
+      name="msapplication-TileColor"
+      content="#ffffff"
+    />
+    <meta
+      name="msapplication-TileImage"
+      content="%PUBLIC_URL%/favicon/favicon-144.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="152x152"
+      href="%PUBLIC_URL%/favicon/favicon-152.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="144x144"
+      href="%PUBLIC_URL%/favicon/favicon-144.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="120x120"
+      href="%PUBLIC_URL%/favicon/favicon-120.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="114x114"
+      href="%PUBLIC_URL%/favicon/favicon-114.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="72x72"
+      href="%PUBLIC_URL%/favicon/favicon-72.png"
+    />
+    <link
+      rel="apple-touch-icon-precomposed"
+      href="%PUBLIC_URL%/favicon/favicon-57.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    >
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <meta
+      name="theme-color"
+      content="#000000"
+    />
+    <meta
+      name="description"
+      content="Polkadot Mempool Explorer"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="%PUBLIC_URL%/logo192.png"
+    />
+    <link
+      rel="manifest"
+      href="%PUBLIC_URL%/manifest.json"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+    >
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    >
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+      }
+
+      #root:empty {
+        align-items: center;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        width: 100vw;
+      }
+
+      #root:empty:before {
+        animation: rotate 2.5s linear infinite;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjQwIiB3aWR0aD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTI4LjgxOSAybDIuMzYyIDEuMzY0LTMuMTI4IDUuNDE2LTIuMzYyLTEuMzY0ek0zOCAxMS4xODFsLTEuMzYxLTIuMzYyLTUuNDE5IDMuMTI4IDEuMzY0IDIuMzYyem0tNC4yNTYgMTAuMTgzSDQwdi0yLjcyOGgtNi4yNTZ6bS0yLjUyNCA2LjY4OWw1LjQxOSAzLjEyOEwzOCAyOC44MTlsLTUuNDE5LTMuMTI4em0tNS41MjkgNC41MzFMMjguODE5IDM4bDIuMzYyLTEuMzY0LTMuMTI4LTUuNDE2ek0xOC42MzYgNDBoMi43Mjd2LTYuMjU2aC0yLjcyN3ptLTkuODE3LTMuMzYxTDExLjE4MSAzOGwzLjEyOC01LjQxOS0yLjM2Mi0xLjM2MXpNMiAyOC44MTlsMS4zNjQgMi4zNjIgNS40MTYtMy4xMjgtMS4zNjQtMi4zNjJ6bS0yLTcuNDU1aDYuMjU2di0yLjcyOEgwem04Ljc4LTkuNDE2TDMuMzYxIDguODE5IDIgMTEuMTgxbDUuNDE4IDMuMTI4em0uMDM5LTguNTg2bDMuMTI4IDUuNDE4IDIuMzYyLTEuMzY0TDExLjE4MSAyem05LjgxNyAyLjg5NWgyLjcyN1YwaC0yLjcyN3oiIGZpbGw9IiNlNjAwN2EiLz48L3N2Zz4=');
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        content: '';
+        display: block;
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: 40px;
+        width: 40px;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div id="portalContainer"></div>
+  </body>
+
+</html>

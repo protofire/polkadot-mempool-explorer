@@ -1,0 +1,65 @@
+version: '3.7'
+services:
+  web_explorer:
+    build:
+      context: ./web
+    environment:
+      PORT: 8084
+    ports:
+      - 8084:8084
+    command: npm run start
+    volumes:
+      - ./web:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - polkadot-test-net
+      
+  api_explorer:
+    build:
+      context: ./api
+    networks:
+      - polkadot-test-net
+    environment:
+      PORT: 8085
+    ports:
+      - 8085:8085
+    command: npm run start
+    volumes:
+      - ./api:/usr/src/app
+      - /usr/src/app/node_modules
+  
+  polkadot_local_node:
+    image: jarcodallo/polkadot:latest
+    command: polkadot --dev --name "Pochoclos 🇦🇷" --rpc-external --ws-external
+    ports:
+      - 9944:9944
+      - 9933:9933
+    volumes:
+      - ./data:/data
+    networks:
+      - polkadot-test-net
+      
+  polkadot_westend_node:
+    image: jarcodallo/polkadot:latest
+    command: polkadot --chain westend --name "Cipayos 🇦🇷" --rpc-external --ws-external --rpc-cors all --in-peers 50 --out-peers 50
+    ports:
+      - 9966:9944
+      - 9955:9933
+    volumes:
+      - ./data:/data
+    networks:
+      - polkadot-test-net
+
+  polkadot_main_node:
+    image: jarcodallo/polkadot:latest
+    command: polkadot --name "Gardel 🇦🇷" --rpc-external --ws-external --rpc-cors all --in-peers 150 --out-peers 150
+    ports:
+      - 9988:9944
+      - 9977:9933
+    volumes:
+      - ./data:/data
+    networks:
+      - polkadot-test-net
+networks:
+  polkadot-test-net:
+  
