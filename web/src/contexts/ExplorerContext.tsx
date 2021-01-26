@@ -40,7 +40,7 @@ interface ActionPayload {
   transactions?: Transaction[]
   networkId?: string
   isLoading?: boolean
-  apiError?: string | null
+  errorMessage?: string
 }
 
 interface Action {
@@ -80,6 +80,7 @@ const DELETE_NETWORKS_ACTION = 'DELETE_NETWORKS_ACTION'
 const LOADING_NETWORKS_ACTION = 'LOADING_NETWORKS'
 const LOADING_TRANSACTIONS_ACTION = 'LOADING_TRANSACTIONS'
 const SET_TRANSACTIONS_ACTION = 'SET_TRANSACTIONS'
+const API_ERROR_ACTION = 'API_ERROR'
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -144,6 +145,16 @@ const reducer = (state: State, action: Action): State => {
         isLoadingTransactions: typeof isLoading === 'boolean' ? isLoading : false,
       }
     }
+    case API_ERROR_ACTION: {
+      const { errorMessage } = action.payload
+
+      return {
+        ...state,
+        apiError: errorMessage || null,
+        isLoadingTransactions: false,
+        isLoadingNetworks: false,
+      }
+    }
     default: {
       return { ...state }
     }
@@ -177,8 +188,13 @@ export const ExplorerProvider: React.FC = ({ children }) => {
           isLoading: false,
         },
       })
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error(error)
+
+      dispatch({
+        type: API_ERROR_ACTION,
+        payload: { errorMessage: error.message },
+      })
     }
   }
 
@@ -214,6 +230,11 @@ export const ExplorerProvider: React.FC = ({ children }) => {
       })
     } catch (error) {
       console.error(error)
+
+      dispatch({
+        type: API_ERROR_ACTION,
+        payload: { errorMessage: error.message },
+      })
     }
   }
 
@@ -223,12 +244,16 @@ export const ExplorerProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     getTransactions(state.selectedNetwork.id)
-
-    const interval = setInterval(async () => {
-      getTransactions(state.selectedNetwork.id)
-    }, 5000)
-    return () => clearInterval(interval)
   }, [state.selectedNetwork])
+
+  useEffect(() => {
+    if (!state.isLoadingTransactions) {
+      const interval = setInterval(async () => {
+        getTransactions(state.selectedNetwork.id)
+      }, 5000)
+      return () => clearInterval(interval)
+    }
+  }, [state.selectedNetwork, state.isLoadingTransactions])
 
   return (
     <ExplorerContext.Provider

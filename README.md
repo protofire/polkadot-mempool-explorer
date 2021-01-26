@@ -23,7 +23,7 @@ This basically allows someone to subscribe and track status changes in the extri
  - Polkadot dependencies update: https://github.com/jarcodallo/polkadot/commits/master
  - Docker image of the polkadot binary: https://hub.docker.com/repository/docker/jarcodallo/polkadot
 
-## Development
+## Get Started
 
 In the project directory, you can run:
 
@@ -82,3 +82,7 @@ Displays log output from custom `polkadot-westend` service.
 ### `npm polkadot-main:logs`
 
 Displays log output from custom `polkadot-main` service.
+
+## License
+
+Mempool Explorer is [Apache 2.0 licensed](LICENSE).
