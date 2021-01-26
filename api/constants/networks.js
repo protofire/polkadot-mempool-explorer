@@ -24,6 +24,26 @@ const TEST_NETWORKS = [
     name: 'Westend',
     url: 'wss://westend-rpc.polkadot.io',
   },
+  {
+    id: 'rococo',
+    name: 'Rococo',
+    url: 'wss://rococo-rpc.polkadot.io',
+  },
+  {
+    id: 'rococo-tick',
+    name: 'Rococo Tick',
+    url: 'wss://tick-rpc.polkadot.io',
+  },
+  {
+    id: 'rococo-trick',
+    name: 'Rococo Trick',
+    url: 'wss://trick-rpc.polkadot.io',
+  },
+  {
+    id: 'rococo-track',
+    name: 'Rococo Track',
+    url: 'wss://track-rpc.polkadot.io',
+  },
 ];
 
 const LOCAL_NETWORKS = [

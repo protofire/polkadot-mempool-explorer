@@ -2,7 +2,7 @@
  * Module dependencies
  */
 const { ApiPromise, WsProvider } = require('@polkadot/api');
-const { PRODUCTION } = require('../../env');
+const { DEVELOPMENT } = require('../../env');
 const {
   LIVE_NETWORKS,
   TEST_NETWORKS,
@@ -24,10 +24,11 @@ const newHeadWatchers = {};
 class PolkadotService {
   static getNetworks() {
     const local = [...LOCAL_NETWORKS];
-    const live = [...LIVE_NETWORKS, ...CUSTOM_NETWORKS];
+    let live = [...LIVE_NETWORKS, ...CUSTOM_NETWORKS];
 
-    if (!PRODUCTION) {
+    if (DEVELOPMENT) {
       local.push(...DEV_NETWORKS);
+      live = LIVE_NETWORKS;
     }
 
     return {

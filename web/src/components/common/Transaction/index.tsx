@@ -222,6 +222,7 @@ export const Transaction: React.FC<Props> = (props) => {
   const result = isValid ? 'Valid' : 'Invalid'
   const explorerURL = 'https://polkadot.subscan.io/'
   const blockURL = `${explorerURL}block/`
+  const extrinsicURL = `${explorerURL}extrinsic/`
   const accountURL = `${explorerURL}account/`
 
   return (
@@ -229,15 +230,15 @@ export const Transaction: React.FC<Props> = (props) => {
       <TopWrapper>
         <TitleRow>
           <Label>Tx Hash:</Label>
-          <LinkValue href={`${blockURL}${hash}`} target="_blank">
+          <LinkValue href={`${extrinsicURL}${hash}`} target="_blank">
             {hash}
           </LinkValue>
           <ButtonCopy value={hash} />
-          <ButtonExternalLink href={`${blockURL}${hash}`} style={{ marginLeft: '2px' }} />
+          <ButtonExternalLink href={`${extrinsicURL}${hash}`} style={{ marginLeft: '2px' }} />
         </TitleRow>
         <TimeWrapper>
           <TimeIcon />
-          <Time href={`${blockURL}${hash}`} target="_blank">
+          <Time href={`${extrinsicURL}${hash}`} target="_blank">
             {updateAt}
           </Time>
         </TimeWrapper>
