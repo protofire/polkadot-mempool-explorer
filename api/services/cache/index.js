@@ -29,10 +29,11 @@ class CacheService {
 
     // Lock network and prevent update at the same time
     let extrinsicKeys = await lock.acquire(networkId);
-    
+
     try {
       if (!extrinsicKeys) {
-        extrinsicKeys = await CacheService.getNetworkExtrinsicKeys(networkId);  
+        extrinsicKeys = await CacheService.getNetworkExtrinsicKeys(networkId);
+        extrinsicKeys.reverse();
       }
 
       const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
@@ -70,19 +71,40 @@ class CacheService {
   }
 
   static async getExtrinsics(networkId) {
-    const networkKey = CacheService.getNetworkKey(networkId);
-    const extrinsicKeys = JSON.parse(lruCache.get(networkKey) || null) || [];
+    const extrinsicKeys = await CacheService.getNetworkExtrinsicKeys(networkId);
 
     if (extrinsicKeys.length > 0) {
-      const extrinsics = extrinsicKeys.map(
-        (extrinsicKey) => JSON.parse(lruCache.get(extrinsicKey) || null),
-      );
+      const expireExtrinsicKeys = [];
+      const extrinsics = [];
+
+      extrinsicKeys.forEach((extrinsicKey) => {
+        const extrinsic = JSON.parse(lruCache.get(extrinsicKey) || null);
+
+        if (extrinsic) {
+          extrinsics.push(extrinsic);
+        } else {
+          expireExtrinsicKeys.push(extrinsicKey);
+        }
+      });
+
+      // Remove the least-recently-used extrinsic from network
+      // In some cases the extrinsic can expire and still be present on the network cache.
+      if (expireExtrinsicKeys.length > 0) {
+        expireExtrinsicKeys.forEach((expireExtrinsicKey) => {
+          const index = extrinsicKeys.indexOf(expireExtrinsicKey);
+
+          if (index !== -1) {
+            extrinsicKeys.splice(index, 1);
+          }
+        });
+
+        // Update network
+        await CacheService.setNetworkExtrinsicKeys(networkId, extrinsicKeys);
+      }
 
       return extrinsics.sort((a, b) => {
-        if (a.createAt > b.createAt)
-          return -1;
-        if (a.createAt < b.createAt)
-          return 1;
+        if (a.createAt > b.createAt) return -1;
+        if (a.createAt < b.createAt) return 1;
         return 0;
       });
     }
@@ -99,7 +121,7 @@ class CacheService {
   static async getNetworkExtrinsicKeys(networkId) {
     const networkKey = CacheService.getNetworkKey(networkId);
 
-    return (JSON.parse(lruCache.get(networkKey) || null) || []).reverse();
+    return (JSON.parse(lruCache.get(networkKey) || null) || []);
   }
 
   static async setExtrinsic(hash, from, nonce, networkId, data) {

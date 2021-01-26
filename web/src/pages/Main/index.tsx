@@ -10,8 +10,12 @@ import { AllTransactions } from 'components/icons/AllTransactions'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { InMempool } from 'components/icons/InMempool'
 import { JustRemoved } from 'components/icons/JustRemoved'
+import { BaseCard } from 'components/pureStyledComponents/BaseCard'
+import { CardText } from 'components/pureStyledComponents/CardText'
 import { PageTitle } from 'components/text/PageTitle'
 import useMempoolExplorer from 'hooks/useMempoolExplorer'
+
+import { Transactions } from './components/Transactions'
 
 const Wrapper = styled.div``
 
@@ -198,13 +202,11 @@ export const Main: React.FC = (props) => {
       >
         Mempool Explorer
       </PageTitle>
-      {isLoadingTransactions && filterTransactions.length < 1
-        ? [0, 1, 2, 3, 4, 5].map((index) => (
-            <ItemPlaceholder key={index} opacity={(1 - index * 0.15).toString()} />
-          ))
-        : filterTransactions.map((item, index) => {
-            return <Transaction data={item} key={index} />
-          })}
+      <Transactions
+        searchBy={searchBy}
+        searchValue={searchValue}
+        transactionState={transactionState}
+      />
     </Wrapper>
   )
 }

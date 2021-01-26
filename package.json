@@ -1,6 +1,6 @@
 {
   "name": "polkadot-mempool-explorer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start:dev": "docker-compose up -d",
     "down": "docker-compose down -v --rmi=local  --remove-orphans",
