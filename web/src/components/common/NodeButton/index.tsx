@@ -159,9 +159,6 @@ const ButtonDelete = styled.div`
 
 export const NodeButton: React.FC = (props) => {
   const { ...restProps } = props
-  const [isWorking, setIsWorking] = React.useState(false)
-  const [currentItem, setcurrentItem] = React.useState(0)
-  const [result, setResult] = React.useState<ResultProps>()
   const {
     apiError,
     deleteNetwork,
@@ -170,28 +167,19 @@ export const NodeButton: React.FC = (props) => {
     selectNetwork,
     selectedNetwork,
   } = useMempoolExplorer()
+  let result
 
   if (apiError) {
-    setResult({
+    result = {
       message: apiError,
       onClick: () => ({}),
       resultType: ResultType.error,
-    })
+    }
   }
 
   const addNode = React.useCallback(() => {
     // let's simulate adding and connecting to a node
     setIsModalOpen(false)
-    setIsWorking(true)
-    setTimeout(() => {
-      // let's simulate an error (there's no need to show anything if the
-      // operation is successful)
-      setResult({
-        message: 'There was a problem connecting to the node.',
-        onClick: () => setIsWorking(false),
-        resultType: ResultType.error,
-      })
-    }, 2000)
   }, [])
 
   const [isModalOpen, setIsModalOpen] = React.useState(false)
