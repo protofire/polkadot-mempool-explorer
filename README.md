@@ -11,7 +11,7 @@ Mempool Explorer allow users to monitor pending transactions on [Polkadot](https
 
 ## Demo
 
-[https://mempool.dot.protofire.io](https://mempool.dot.protofire.io)
+[mempool.dot.protofire.io](https://mempool.dot.protofire.io)
 
 ## Custom Polkadot Node
 
@@ -30,7 +30,7 @@ In the project directory, you can run:
 ### `npm start:dev`
 
 Runs the docker containers in the development mode.\
-Open [http://localhost:8084](http://localhost:8084) to view it in the browser.
+Open [localhost:8084](http://localhost:8084) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
@@ -82,6 +82,18 @@ Displays log output from custom `polkadot-westend` service.
 ### `npm polkadot-main:logs`
 
 Displays log output from custom `polkadot-main` service.
+
+## Mempool Explorer API Definition
+
+<p align="center"><img src="./assets/swagger.png"/></p>
+
+You can read more about the API Definition [here](https://mempool.dot.protofire.io/api/v1/api-docs).
+
+## Contributing
+
+### Code of Conduct
+
+[Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## License
 

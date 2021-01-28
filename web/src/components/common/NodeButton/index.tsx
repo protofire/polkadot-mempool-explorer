@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Button } from 'components/buttons/Button'
 import { Dropdown, DropdownItem, DropdownPosition } from 'components/common/Dropdown'
-import { FullSpinner, ResultProps, ResultType } from 'components/common/FullSpinner'
+import { FullSpinner, ResultType } from 'components/common/FullSpinner'
 import { Modal } from 'components/common/Modal'
 import { ChevronDown } from 'components/icons/ChevronDown'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
@@ -212,19 +212,6 @@ export const NodeButton: React.FC = (props) => {
                   <ItemName>{item.name}</ItemName>
                 </ItemNameWrapper>
                 <ItemURL>{item.url}</ItemURL>
-                {index !== 0 && (
-                  <ButtonDelete
-                    onClick={(e) => {
-                      e.stopPropagation()
-
-                      if (confirm(`Remove ${item.name}?`)) {
-                        deleteNetwork(item.id)
-                      }
-                    }}
-                  >
-                    <RemoveIcon />
-                  </ButtonDelete>
-                )}
               </CustomDropdownItem>
             ))}
           </ItemsWrapper>,
