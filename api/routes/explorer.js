@@ -32,7 +32,7 @@ router.get('/networks', (req, res) => {
   }
 });
 
-router.get('/networks/:networkId/reset', async (req, res) => {
+router.post('/networks/:networkId/reset', async (req, res) => {
   try {
     await PolkadotService.resetWatchPendingExtrinsics(req.params.networkId || '');
 
