@@ -47,7 +47,6 @@ router.post('/networks/:networkId/reset', async (req, res) => {
 router.get('/transactions/:networkId', async (req, res) => {
   try {
     const networkId = req.params.networkId || '';
-    await PolkadotService.watchPendingExtrinsics(networkId);
 
     const extrinsics = await CacheService.getExtrinsics(networkId);
     const response = extrinsics.map((extrinsic) => {

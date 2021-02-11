@@ -83,12 +83,6 @@ Displays log output from custom `polkadot-westend` service.
 
 Displays log output from custom `polkadot-main` service.
 
-## Mempool Explorer API Definition
-
-<p align="center"><img src="./assets/swagger.png"/></p>
-
-You can read more about the API Definition [here](https://mempool.dot.protofire.io/api/v1/api-docs).
-
 ## Contributing
 
 ### Code of Conduct
