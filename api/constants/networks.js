@@ -1,7 +1,7 @@
 const DEFAULT_NETWORK = {
   id: 'polkadot',
   name: 'Polkadot',
-  url: 'wss://cc1-1.polkadot.network',
+  url: 'wss://rpc.polkadot.io',
 };
 
 const LIVE_NETWORKS = [
@@ -9,26 +9,21 @@ const LIVE_NETWORKS = [
   {
     id: 'kusama',
     name: 'Kusama',
-    url: 'wss://cc3-5.kusama.network',
+    url: 'wss://kusama-rpc.polkadot.io',
   },
 ];
 
 const TEST_NETWORKS = [
   {
-    id: 'amber',
-    name: 'Amber',
-    url: 'wss://fullnode.amber.centrifuge.io',
-  },
-  {
     id: 'westend2',
     name: 'Westend',
     url: 'wss://westend-rpc.polkadot.io',
   },
-  // {
-  //   id: 'rococo',
-  //   name: 'Rococo',
-  //   url: 'wss://rococo-rpc.polkadot.io',
-  // },
+  {
+    id: 'rococo',
+    name: 'Rococo',
+    url: 'wss://rococo-rpc.polkadot.io',
+  },
   // {
   //   id: 'rococo-tick',
   //   name: 'Rococo Tick',
