@@ -4,8 +4,6 @@
 const { ApiPromise, WsProvider } = require('@polkadot/api');
 const {
   DEVELOPMENT,
-  WS_PROVIDER_RETRIES,
-  WS_PROVIDER_RETRY_DELAY,
   FETCH_PENDING_EXTRINSICS_DELAY,
 } = require('../../env');
 const {
@@ -68,8 +66,9 @@ class PolkadotService {
     ));
 
     return Promise.all(promises);
+    // return PolkadotService.watchPendingExtrinsics('polkadot');
   }
-  
+
   /**
    * Connect to Polkadot via WebSocket
    * @param {string} networkId
@@ -80,39 +79,11 @@ class PolkadotService {
     // Store all connection in memory.
     if (!connections[networkId]) {
       try {
-        const provider = new WsProvider(endpoint, false);
-        
-        provider.on('connected', () => logger.info(`Service connected to ${endpoint}`));
-        provider.on('disconnected', () => {
-          logger.warn(`Service disconnected from ${endpoint}.`);
-          logger.info(`Trying to connect again in ${WS_PROVIDER_RETRY_DELAY / 1000} seconds.`);
-
-          let retries = 1;
-
-          // Retry to connect
-          const unsub = setInterval(async () => {
-            try {
-              await provider.connect();
-              await PolkadotService.unSubscribeWatchers(networkId);
-            } catch (err) {
-              logger.error({ err }, 'Error trying to connect with Provider.');
-            } finally {
-              if (provider.isConnected || retries === WS_PROVIDER_RETRIES) {
-                clearInterval(unsub);
-                return;
-              }
-
-              retries = retries + 1;
-            }
-          }, WS_PROVIDER_RETRY_DELAY);
-        });
-        provider.on('error', (err) => {
-          logger.error({ err }, 'Error trying to connect with Provider.');
-        });
+        const provider = new WsProvider(endpoint, 100);
 
         // connect manually to websocket
         await provider.connect();
-        
+
         let options = { provider };
         let api = await ApiPromise.create(options);
         const { methods } = await api.rpc.rpc.methods();
@@ -131,7 +102,7 @@ class PolkadotService {
         connections[networkId] = api.clone();
 
         await PolkadotService.setTokenSymbol(networkId, api);
-        
+
         return connections[networkId];
       } catch (error) {
         logger.error({ err: error }, 'Error trying to create Api Provider.');
@@ -182,11 +153,11 @@ class PolkadotService {
 
     return PolkadotService.watchPendingExtrinsics(networkId);
   }
-  
+
   static unSubscribeWatchers(networkId) {
     const unsubExtrinsic = PolkadotService.getExtrinsicWatcher(networkId);
     const unsubNewHead = PolkadotService.getNewHeadWatcher(networkId);
-    
+
     if (unsubExtrinsic) {
       // un subscribe from watchPendingExtrinsics
       clearInterval(unsubExtrinsic);
@@ -205,14 +176,14 @@ class PolkadotService {
   static async watchPendingExtrinsics(networkId) {
     if (!PolkadotService.getExtrinsicWatcher(networkId)) {
       logger.info(`Init watcher extrinsics for network: ${networkId}`);
-      
+
       try {
         const api = await PolkadotService.connect(networkId);
 
         if (api) {
           // Wait until we are ready and connected
           await api.isReady;
-          
+
           const tokenSymbol = await CacheService.getTokenSymbol(networkId);
           const hasTrackExtrinsicMethod = PolkadotService.hasTrackExtrinsicMethod(networkId);
 
@@ -300,7 +271,7 @@ class PolkadotService {
           extrinsicWatchers[networkId] = unsub;
         }
       } catch (error) {
-        logger.error({ err }, 'Error on watchPendingExtrinsics.');
+        logger.error({ err: error }, 'Error on watchPendingExtrinsics.');
       }
     }
   }
@@ -339,6 +310,7 @@ class PolkadotService {
 
         // The transaction has been included in block
         if (isInBlock) {
+          // eslint-disable-next-line max-len
           const { number: inBlockNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asInBlock);
 
           data.block = {
@@ -349,6 +321,7 @@ class PolkadotService {
 
         // The transaction has been finalized
         if (isFinalized) {
+          // eslint-disable-next-line max-len
           const { number: finalizedNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalized);
 
           data.block = {
@@ -361,6 +334,7 @@ class PolkadotService {
 
         // Maximum number of finality has been reached, subscribe again.
         if (isFinalityTimeout) {
+          // eslint-disable-next-line max-len
           const { number: finalityTimeoutNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalityTimeout);
 
           data.block = {
@@ -395,7 +369,7 @@ class PolkadotService {
 
       try {
         const api = await PolkadotService.connect(networkId);
-        
+
         if (api) {
           // Wait until we are ready and connected
           await api.isReady;
@@ -406,11 +380,11 @@ class PolkadotService {
             const { block } = await api.rpc.chain.getBlock(blockHash);
             const blockEvents = await api.query.system.events.at(header.hash);
             const rows = [];
-  
+
             // map between the extrinsics and events
             block.extrinsics.forEach((extrinsic, index) => {
               const hash = extrinsic.hash.toString();
-  
+
               if (pendingExtrinsicHashes.includes(hash)) {
                 const data = {
                   hash,
@@ -424,7 +398,7 @@ class PolkadotService {
                   events: [],
                   updateAt: Date.now(),
                 };
-  
+
                 // filter the specific events based on the phase and then the
                 // index of our extrinsic in the block
                 data.events = blockEvents
@@ -438,18 +412,18 @@ class PolkadotService {
                       data.success = false;
                       data.finalized = true;
                     }
-  
+
                     return {
                       method: event.section.toString(),
                       section: event.method.toString(),
                       data: event.data.toHuman(),
                     };
                   });
-  
+
                 rows.push(data);
               }
             });
-  
+
             try {
               // Update extrinsics
               await Promise.all(rows.map((row) => CacheService.upsertExtrinsic(row)));
@@ -457,11 +431,11 @@ class PolkadotService {
               logger.error({ err }, 'Error trying to update extrinsis');
             }
           });
-  
-          newHeadWatchers[networkId] = unsub; 
+
+          newHeadWatchers[networkId] = unsub;
         }
       } catch (error) {
-        logger.error({ err }, 'Error on watchNewHeads.');
+        logger.error({ err: error }, 'Error on watchNewHeads.');
       }
     }
   }

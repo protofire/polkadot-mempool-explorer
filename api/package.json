@@ -7,8 +7,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development nodemon --inspect --trace-warnings server.js",
-    "start:prod": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=development nodemon --max-old-space-size=2048 --trace_gc --inspect --trace-warnings server.js",
+    "start:prod": "NODE_ENV=production node --max-old-space-size=8192 server.js",
     "lint": "eslint --ext .js constants/ routes/ services/ server.js",
     "lint-fix": "eslint --fix --ext .js constants/ routes/ services/ server.js"
   },
