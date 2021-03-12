@@ -55,16 +55,16 @@ const DEV_NETWORKS = [
     name: 'Docker Node Local',
     url: 'ws://polkadot_local_node:9944',
   },
-  {
-    id: 'docker-westend',
-    name: 'Docker Node Westend',
-    url: 'ws://polkadot_westend_node:9944',
-  },
-  {
-    id: 'docker-polkadot',
-    name: 'Docker Node Polkadot',
-    url: 'ws://polkadot_main_node:9944',
-  },
+  // {
+  //   id: 'docker-westend',
+  //   name: 'Docker Node Westend',
+  //   url: 'ws://polkadot_westend_node:9944',
+  // },
+  // {
+  //   id: 'docker-polkadot',
+  //   name: 'Docker Node Polkadot',
+  //   url: 'ws://polkadot_main_node:9944',
+  // },
 ];
 
 const CUSTOM_NETWORKS = [

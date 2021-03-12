@@ -8,7 +8,8 @@ const PRODUCTION = variables.NODE_ENV === 'production';
 /**
  * Env - pre-parsing for all env variable
  */
-module.exports = Object.assign({}, variables, {
+module.exports = {
+  ...variables,
   PRODUCTION,
   DEVELOPMENT: variables.NODE_ENV === 'development',
   TEST: variables.NODE_ENV === 'test',
@@ -23,5 +24,6 @@ module.exports = Object.assign({}, variables, {
   DATE_FORMAT: variables.DATE_FORMAT || 'MMM D, YYYY, h:mm:ss A',
   WS_PROVIDER_RETRIES: variables.WS_PROVIDER_RETRIES || 5, // Default 10 times
   WS_PROVIDER_RETRY_DELAY: variables.WS_PROVIDER_RETRY_DELAY || 5000, // Default 5 seconds
-  FETCH_PENDING_EXTRINSICS_DELAY: variables.FETCH_PENDING_EXTRINSICS_DELAY || 5000, // Default 5 seconds
-});
+  FETCH_PENDING_EXTRINSICS_DELAY:
+    variables.FETCH_PENDING_EXTRINSICS_DELAY || 5000, // Default 5 seconds
+};

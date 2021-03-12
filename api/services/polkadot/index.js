@@ -2,10 +2,7 @@
  * Module dependencies
  */
 const { ApiPromise, WsProvider } = require('@polkadot/api');
-const {
-  DEVELOPMENT,
-  FETCH_PENDING_EXTRINSICS_DELAY,
-} = require('../../env');
+const { DEVELOPMENT, FETCH_PENDING_EXTRINSICS_DELAY } = require('../../env');
 const {
   LIVE_NETWORKS,
   TEST_NETWORKS,
@@ -14,10 +11,7 @@ const {
   CUSTOM_NETWORKS,
 } = require('../../constants/networks');
 const logger = require('../../logger');
-const {
-  customMethods,
-  customMethodKeys,
-} = require('./custom-rpc-methods');
+const { customMethods, customMethodKeys } = require('./custom-rpc-methods');
 const CacheService = require('../cache');
 
 const connections = {};
@@ -61,9 +55,9 @@ class PolkadotService {
 
   static async initWatchers() {
     const { test, live, local } = PolkadotService.getNetworks();
-    const promises = [...test, ...live, ...local].map((network) => (
+    const promises = [...test, ...live, ...local].map((network) =>
       PolkadotService.watchPendingExtrinsics(network.id)
-    ));
+    );
 
     return Promise.all(promises);
     // return PolkadotService.watchPendingExtrinsics('polkadot');
@@ -135,7 +129,10 @@ class PolkadotService {
    * @param {*} networkId
    */
   static hasTrackExtrinsicMethod(networkId) {
-    return connections[networkId] && connections[networkId].rpc.author.trackExtrinsic === 'function';
+    return (
+      connections[networkId] &&
+      connections[networkId].rpc.author.trackExtrinsic === 'function'
+    );
   }
 
   /**
@@ -143,7 +140,9 @@ class PolkadotService {
    * @param {*} networkId
    */
   static async resetWatchPendingExtrinsics(networkId) {
-    const hasTrackExtrinsicMethod = PolkadotService.hasTrackExtrinsicMethod(networkId);
+    const hasTrackExtrinsicMethod = PolkadotService.hasTrackExtrinsicMethod(
+      networkId
+    );
 
     PolkadotService.unSubscribeWatchers(networkId);
 
@@ -185,7 +184,9 @@ class PolkadotService {
           await api.isReady;
 
           const tokenSymbol = await CacheService.getTokenSymbol(networkId);
-          const hasTrackExtrinsicMethod = PolkadotService.hasTrackExtrinsicMethod(networkId);
+          const hasTrackExtrinsicMethod = PolkadotService.hasTrackExtrinsicMethod(
+            networkId
+          );
 
           if (!hasTrackExtrinsicMethod) {
             await PolkadotService.watchNewHeads(networkId);
@@ -196,7 +197,9 @@ class PolkadotService {
               if (extrinsics.length > 0) {
                 const rows = [];
 
-                logger.info(`${extrinsics.length} pending extrinsics in network ${networkId}.`);
+                logger.info(
+                  `${extrinsics.length} pending extrinsics in network ${networkId}.`
+                );
 
                 extrinsics.forEach((extrinsic) => {
                   const hash = extrinsic.hash.toString();
@@ -210,7 +213,12 @@ class PolkadotService {
 
                   // Start to track transaction life cycle
                   if (hasTrackExtrinsicMethod) {
-                    PolkadotService.trackExtrinsic(networkId, hash, from, nonce);
+                    PolkadotService.trackExtrinsic(
+                      networkId,
+                      hash,
+                      from,
+                      nonce
+                    );
                   }
 
                   extrinsic.args.forEach((arg) => {
@@ -258,12 +266,16 @@ class PolkadotService {
 
                 try {
                   // Save extrinsics
-                  await Promise.all(rows.map((row) => CacheService.upsertExtrinsic(row)));
+                  await Promise.all(
+                    rows.map((row) => CacheService.upsertExtrinsic(row))
+                  );
                 } catch (err) {
                   logger.error({ err }, 'Error trying to store extrinsis');
                 }
               } else {
-                logger.debug(`No pending extrinsics in the pool in network ${networkId}.`);
+                logger.debug(
+                  `No pending extrinsics in the pool in network ${networkId}.`
+                );
               }
             });
           }, FETCH_PENDING_EXTRINSICS_DELAY);
@@ -285,74 +297,98 @@ class PolkadotService {
    */
   static async trackExtrinsic(networkId, hash, from, nonce) {
     const api = await PolkadotService.connect(networkId);
-    const extrinsic = await CacheService.getExtrinsic(hash, from, nonce, networkId);
+    const extrinsic = await CacheService.getExtrinsic(
+      hash,
+      from,
+      nonce,
+      networkId
+    );
     const IsTracked = extrinsic ? extrinsic.tracked : false;
 
     if (!IsTracked) {
       await CacheService.upsertExtrinsic({
-        hash, from, nonce, networkId, tracked: true,
+        hash,
+        from,
+        nonce,
+        networkId,
+        tracked: true,
       });
 
-      const unsub = await api.rpc.author.trackExtrinsic(hash, async (extrinsicStatus) => {
-        const {
-          isInBlock, isFinalityTimeout, isFinalized, isDropped, isInvalid,
-        } = extrinsicStatus;
-        const data = {
-          hash,
-          from,
-          nonce,
-          networkId,
-          block: {},
-          finalized: isFinalized,
-          success: !isInvalid, // The transaction is valid in the current state.
-          dropped: isDropped, // The transaction has been dropped from the pool,
-        };
-
-        // The transaction has been included in block
-        if (isInBlock) {
-          // eslint-disable-next-line max-len
-          const { number: inBlockNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asInBlock);
-
-          data.block = {
-            number: inBlockNumber.toString(),
-            hash: extrinsicStatus.asInBlock.toString(),
-          };
-        }
-
-        // The transaction has been finalized
-        if (isFinalized) {
-          // eslint-disable-next-line max-len
-          const { number: finalizedNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalized);
-
-          data.block = {
-            number: finalizedNumber.toString(),
-            hash: extrinsicStatus.asFinalized.toString(),
+      const unsub = await api.rpc.author.trackExtrinsic(
+        hash,
+        async (extrinsicStatus) => {
+          const {
+            isInBlock,
+            isFinalityTimeout,
+            isFinalized,
+            isDropped,
+            isInvalid,
+          } = extrinsicStatus;
+          const data = {
+            hash,
+            from,
+            nonce,
+            networkId,
+            block: {},
+            finalized: isFinalized,
+            success: !isInvalid, // The transaction is valid in the current state.
+            dropped: isDropped, // The transaction has been dropped from the pool,
           };
 
-          unsub();
+          // The transaction has been included in block
+          if (isInBlock) {
+            // eslint-disable-next-line max-len
+            const { number: inBlockNumber } = await api.rpc.chain.getHeader(
+              extrinsicStatus.asInBlock
+            );
+
+            data.block = {
+              number: inBlockNumber.toString(),
+              hash: extrinsicStatus.asInBlock.toString(),
+            };
+          }
+
+          // The transaction has been finalized
+          if (isFinalized) {
+            // eslint-disable-next-line max-len
+            const { number: finalizedNumber } = await api.rpc.chain.getHeader(
+              extrinsicStatus.asFinalized
+            );
+
+            data.block = {
+              number: finalizedNumber.toString(),
+              hash: extrinsicStatus.asFinalized.toString(),
+            };
+
+            unsub();
+          }
+
+          // Maximum number of finality has been reached, subscribe again.
+          if (isFinalityTimeout) {
+            // eslint-disable-next-line max-len
+            const {
+              number: finalityTimeoutNumber,
+            } = await api.rpc.chain.getHeader(
+              extrinsicStatus.asFinalityTimeout
+            );
+
+            data.block = {
+              number: finalityTimeoutNumber.toString(),
+              hash: extrinsicStatus.asFinalityTimeout.toString(),
+            };
+
+            unsub();
+
+            // Start to track transaction life cycle again.
+            PolkadotService.trackExtrinsic(api, hash, from, nonce, networkId);
+          }
+
+          data.updateAt = Date.now();
+
+          // Update extrinsic state
+          CacheService.upsertExtrinsic(data);
         }
-
-        // Maximum number of finality has been reached, subscribe again.
-        if (isFinalityTimeout) {
-          // eslint-disable-next-line max-len
-          const { number: finalityTimeoutNumber } = await api.rpc.chain.getHeader(extrinsicStatus.asFinalityTimeout);
-
-          data.block = {
-            number: finalityTimeoutNumber.toString(),
-            hash: extrinsicStatus.asFinalityTimeout.toString(),
-          };
-
-          unsub();
-
-          // Start to track transaction life cycle again.
-          PolkadotService.trackExtrinsic(api, hash, from, nonce, networkId);
-        }
-
-        data.updateAt = Date.now();
-
-        // Update extrinsic state
-        CacheService.upsertExtrinsic(data);
-      });
+      );
     }
   }
 
@@ -374,63 +410,72 @@ class PolkadotService {
           // Wait until we are ready and connected
           await api.isReady;
 
-          const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
-            const pendingExtrinsicHashes = await CacheService.getPendingExtrinsicHashes(networkId);
-            const blockHash = await api.rpc.chain.getBlockHash(header.number);
-            const { block } = await api.rpc.chain.getBlock(blockHash);
-            const blockEvents = await api.query.system.events.at(header.hash);
-            const rows = [];
+          const unsub = await api.rpc.chain.subscribeNewHeads(
+            async (header) => {
+              const pendingExtrinsicHashes = await CacheService.getPendingExtrinsicHashes(
+                networkId
+              );
+              const blockHash = await api.rpc.chain.getBlockHash(header.number);
+              const { block } = await api.rpc.chain.getBlock(blockHash);
+              const blockEvents = await api.query.system.events.at(header.hash);
+              const rows = [];
 
-            // map between the extrinsics and events
-            block.extrinsics.forEach((extrinsic, index) => {
-              const hash = extrinsic.hash.toString();
+              // map between the extrinsics and events
+              block.extrinsics.forEach((extrinsic, index) => {
+                const hash = extrinsic.hash.toString();
 
-              if (pendingExtrinsicHashes.includes(hash)) {
-                const data = {
-                  hash,
-                  networkId,
-                  from: extrinsic.signer.toString(),
-                  nonce: parseInt(extrinsic.nonce.toString(), 10),
-                  block: {
-                    number: header.number.toString(),
-                    hash: blockHash.toString(),
-                  },
-                  events: [],
-                  updateAt: Date.now(),
-                };
+                if (pendingExtrinsicHashes.includes(hash)) {
+                  const data = {
+                    hash,
+                    networkId,
+                    from: extrinsic.signer.toString(),
+                    nonce: parseInt(extrinsic.nonce.toString(), 10),
+                    block: {
+                      number: header.number.toString(),
+                      hash: blockHash.toString(),
+                    },
+                    events: [],
+                    updateAt: Date.now(),
+                  };
 
-                // filter the specific events based on the phase and then the
-                // index of our extrinsic in the block
-                data.events = blockEvents
-                  .filter(({ phase }) => phase.isApplyExtrinsic
-                    && phase.asApplyExtrinsic.eq(index))
-                  .map(({ event }) => {
-                    if (api.events.system.ExtrinsicSuccess.is(event)) {
-                      data.success = true;
-                      data.finalized = true;
-                    } else if (api.events.system.ExtrinsicFailed.is(event)) {
-                      data.success = false;
-                      data.finalized = true;
-                    }
+                  // filter the specific events based on the phase and then the
+                  // index of our extrinsic in the block
+                  data.events = blockEvents
+                    .filter(
+                      ({ phase }) =>
+                        phase.isApplyExtrinsic &&
+                        phase.asApplyExtrinsic.eq(index)
+                    )
+                    .map(({ event }) => {
+                      if (api.events.system.ExtrinsicSuccess.is(event)) {
+                        data.success = true;
+                        data.finalized = true;
+                      } else if (api.events.system.ExtrinsicFailed.is(event)) {
+                        data.success = false;
+                        data.finalized = true;
+                      }
 
-                    return {
-                      method: event.section.toString(),
-                      section: event.method.toString(),
-                      data: event.data.toHuman(),
-                    };
-                  });
+                      return {
+                        method: event.section.toString(),
+                        section: event.method.toString(),
+                        data: event.data.toHuman(),
+                      };
+                    });
 
-                rows.push(data);
+                  rows.push(data);
+                }
+              });
+
+              try {
+                // Update extrinsics
+                await Promise.all(
+                  rows.map((row) => CacheService.upsertExtrinsic(row))
+                );
+              } catch (err) {
+                logger.error({ err }, 'Error trying to update extrinsis');
               }
-            });
-
-            try {
-              // Update extrinsics
-              await Promise.all(rows.map((row) => CacheService.upsertExtrinsic(row)));
-            } catch (err) {
-              logger.error({ err }, 'Error trying to update extrinsis');
             }
-          });
+          );
 
           newHeadWatchers[networkId] = unsub;
         }

@@ -24,7 +24,7 @@ router.get('/networks', (req, res) => {
   try {
     const networks = PolkadotService.getNetworks();
 
-    res.send(networks);
+    res.status(200).send(networks);
   } catch (err) {
     logger.error({ err }, 'Error getting networks');
 
@@ -34,7 +34,9 @@ router.get('/networks', (req, res) => {
 
 router.post('/networks/:networkId/reset', async (req, res) => {
   try {
-    await PolkadotService.resetWatchPendingExtrinsics(req.params.networkId || '');
+    await PolkadotService.resetWatchPendingExtrinsics(
+      req.params.networkId || ''
+    );
 
     res.status(204).send();
   } catch (err) {
@@ -53,13 +55,19 @@ router.get('/transactions/:networkId', async (req, res) => {
       let type = '';
 
       if (extrinsic.from !== '' && extrinsic.to !== '' && extrinsic.isSigned) {
-        // Signed transactions contain a signature of the account that issued the transaction and stands to pay a fee to have the transaction included on chain
+        // Signed transactions contain a signature of the account that issued the transaction
+        // and stands to pay a fee to have the transaction included on chain
         type = SIGNED_TRANSACTION;
-      } else if (extrinsic.from !== '' && extrinsic.to !== '' && !extrinsic.isSigned) {
+      } else if (
+        extrinsic.from !== '' &&
+        extrinsic.to !== '' &&
+        !extrinsic.isSigned
+      ) {
         // Since the transaction is not signed, there is nobody to pay a fee
         type = UNSIGNED_TRANSACTION;
       } else {
-        // Inherents are pieces of information that are not signed and only inserted into a block by the block author.
+        // Inherents are pieces of information that are not signed
+        // and only inserted into a block by the block author.
         type = INHERENT;
       }
 
@@ -67,7 +75,8 @@ router.get('/transactions/:networkId', async (req, res) => {
         hash: extrinsic.hash,
         update_at: moment(extrinsic.updateAt).format(DATE_FORMAT),
         create_at: moment(extrinsic.createAt).format(DATE_FORMAT),
-        block_number: extrinsic.block.number !== 0 ? extrinsic.block.number : '',
+        block_number:
+          extrinsic.block.number !== 0 ? extrinsic.block.number : '',
         type,
         nonce: extrinsic.nonce,
         tip: extrinsic.tip,
@@ -80,7 +89,7 @@ router.get('/transactions/:networkId', async (req, res) => {
       };
     });
 
-    res.send({
+    res.status(200).send({
       items: response,
       _total: response.length,
     });

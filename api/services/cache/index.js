@@ -1,20 +1,16 @@
 /**
  * Module dependencies
  */
-const LRU = require('lru-cache');
-const localLock = require('./lock');
+const lru = require('./helpers/lru-cache');
+const localLock = require('./helpers/lock');
 const logger = require('../../logger');
 const ExtrinsicModel = require('./extrinsic.model');
-const { CACHE_MAX_AGE, CACHE_MAX_SIZE, NETWORK_MAX_ITEMS } = require('../../env');
+const { NETWORK_MAX_ITEMS } = require('../../env');
 
 /**
  * Init cache on memory
  */
-const lruCache = new LRU({
-  max: CACHE_MAX_SIZE,
-  maxAge: CACHE_MAX_AGE,
-  updateAgeOnGet: true,
-});
+const lruCache = lru();
 
 /**
  * Init local lock
@@ -23,9 +19,7 @@ const lock = localLock();
 
 class CacheService {
   static async upsertExtrinsic(data = {}) {
-    const {
-      hash, from, nonce, networkId,
-    } = data;
+    const { hash, from, nonce, networkId } = data;
 
     // Lock network and prevent update at the same time
     let extrinsicKeys = await lock.acquire(networkId);
@@ -36,9 +30,20 @@ class CacheService {
         extrinsicKeys.reverse();
       }
 
-      const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
+      const extrinsicKey = CacheService.getExtrinsicKey(
+        networkId,
+        hash,
+        from,
+        nonce
+      );
+
       const extrinsic = new ExtrinsicModel();
-      const cacheExtrinsic = await CacheService.getExtrinsic(hash, from, nonce, networkId);
+      const cacheExtrinsic = await CacheService.getExtrinsic(
+        hash,
+        from,
+        nonce,
+        networkId
+      );
 
       // Check if extrinsic is already on cache and update the local instance of ExtrinsicModel
       extrinsic.buildFrom(cacheExtrinsic || {});
@@ -56,7 +61,13 @@ class CacheService {
       // Update cache with data
       extrinsic.buildFrom(data);
       // Update extrinsic
-      await CacheService.setExtrinsic(hash, from, nonce, networkId, extrinsic.toJSON());
+      await CacheService.setExtrinsic(
+        hash,
+        from,
+        nonce,
+        networkId,
+        extrinsic.toJSON()
+      );
       // Update network
       await CacheService.setNetworkExtrinsicKeys(networkId, extrinsicKeys);
 
@@ -113,7 +124,12 @@ class CacheService {
   }
 
   static async getExtrinsic(hash, from, nonce, networkId) {
-    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
+    const extrinsicKey = CacheService.getExtrinsicKey(
+      networkId,
+      hash,
+      from,
+      nonce
+    );
 
     return JSON.parse(lruCache.get(extrinsicKey) || null);
   }
@@ -121,11 +137,16 @@ class CacheService {
   static async getNetworkExtrinsicKeys(networkId) {
     const networkKey = CacheService.getNetworkKey(networkId);
 
-    return (JSON.parse(lruCache.get(networkKey) || null) || []);
+    return JSON.parse(lruCache.get(networkKey) || null) || [];
   }
 
   static async setExtrinsic(hash, from, nonce, networkId, data) {
-    const extrinsicKey = CacheService.getExtrinsicKey(networkId, hash, from, nonce);
+    const extrinsicKey = CacheService.getExtrinsicKey(
+      networkId,
+      hash,
+      from,
+      nonce
+    );
 
     lruCache.set(extrinsicKey, JSON.stringify(data));
   }
@@ -163,10 +184,14 @@ class CacheService {
 
   static getExtrinsicKey(networkId, hash, from, nonce) {
     if (!hash || !from || !Number.isInteger(nonce) || !networkId) {
-      throw new Error('You must provide a hash, from, nonce and networkId in order to save an extrinsic');
+      throw new Error(
+        'You must provide a hash, from, nonce and networkId in order to save an extrinsic'
+      );
     }
 
-    return `extrinsic.network-${networkId}.hash-${hash}.from-${from}.nonce-${nonce}.key`;
+    return `${CacheService.getNetworkKey(
+      networkId
+    )}.extrinsic.hash-${hash}.from-${from}.nonce-${nonce}.key`;
   }
 
   static getNetworkKey(networkId) {

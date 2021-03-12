@@ -20,11 +20,13 @@ app.use(API_BASE_PATH, routes);
  */
 http.createServer(app).listen(PORT, () => {
   logger.info(`App listening on port http://localhost:${PORT}/`);
-  
-  // Init all watchers 
-  PolkadotService.initWatchers().then(() => {
-    logger.info('All watchers started');
-  }).catch((err) => {
-    logger.error({ err }, 'Error trying to init watchers.');
-  });
+
+  // Init all watchers
+  PolkadotService.initWatchers()
+    .then(() => {
+      logger.info('All watchers started');
+    })
+    .catch((err) => {
+      logger.error({ err }, 'Error trying to init watchers.');
+    });
 });
