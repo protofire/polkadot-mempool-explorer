@@ -60,7 +60,6 @@ class PolkadotService {
     );
 
     return Promise.all(promises);
-    // return PolkadotService.watchPendingExtrinsics('polkadot');
   }
 
   /**
