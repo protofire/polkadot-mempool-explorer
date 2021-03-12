@@ -6,16 +6,16 @@
   },
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development nodemon --inspect --trace-warnings server.js",
-    "start:prod": "NODE_ENV=production node server.js",
-    "lint": "eslint --ext .js constants/ routes/ services/ server.js",
-    "lint-fix": "eslint --fix --ext .js constants/ routes/ services/ server.js"
+    "start": "NODE_ENV=development nodemon --max-old-space-size=2048 --inspect --trace-warnings server.js",
+    "start:prod": "NODE_ENV=production node --max-old-space-size=8192 server.js",
+    "lint": "eslint --ext .js constants/ http-errors/ logger/ routes/ services/ env.js server.js",
+    "lint-fix": "eslint --fix --ext .js constants/ http-errors/ logger/ routes/ services/ env.js server.js",
+    "test": "NODE_ENV=test mocha --config .mocharc.js",
+    "test:cover": "nyc npm run test"
   },
-  "author": "",
   "license": "ISC",
   "dependencies": {
-    "@polkadot/api": "^3.8.1",
+    "@polkadot/api": "^4.0.3",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
@@ -30,14 +30,42 @@
   },
   "devDependencies": {
     "@substrate/txwrapper": "^3.10.3",
-    "pino-pretty": "^4.3.0",
     "bn.js": "^5.1.3",
     "chai": "^4.2.0",
     "eslint": "^7.15.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
+    "nyc": "^15.1.0",
+    "pino-pretty": "^4.3.0",
+    "prettier": "^2.2.1",
+    "rewiremock": "^3.14.3",
+    "sinon": "^9.2.4",
+    "source-map-support": "^0.5.19",
     "supertest": "^6.0.1"
+  },
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "**/*.spec.js",
+      "**/*.test.js",
+      "**/*.mock.js",
+      "**/test/**"
+    ],
+    "include": [
+      "routes",
+      "services"
+    ],
+    "reporter": [
+      "cobertura",
+      "lcov",
+      "text-summary"
+    ],
+    "report-dir": "./tests/report",
+    "source-map": true,
+    "produce-source-map": true
   }
 }

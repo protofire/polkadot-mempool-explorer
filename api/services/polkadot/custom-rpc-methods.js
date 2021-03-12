@@ -6,11 +6,7 @@ const customMethods = {
         trackExtrinsic: {
           description: 'Subscribe to watch an extrinsic until unsubscribed',
           type: 'ExtrinsicStatus',
-          pubsub: [
-            'extrinsicUpdate2',
-            'trackExtrinsic',
-            'untrackExtrinsic',
-          ],
+          pubsub: ['extrinsicUpdate2', 'trackExtrinsic', 'untrackExtrinsic'],
           params: [
             {
               name: 'hash',

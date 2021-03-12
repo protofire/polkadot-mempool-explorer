@@ -9,7 +9,7 @@ let prettyPrint = false;
 if (DEVELOPMENT) {
   prettyPrint = {
     colorize: true,
-    translateTime: `UTC:yyyy-mm-dd'T'HH:MM:ss:l'Z'`,
+    translateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss:l'Z'",
   };
 }
 

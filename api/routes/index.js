@@ -35,7 +35,11 @@ router.use([
  * Mount routes
  */
 router.use('/', ping);
-router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(explorerApiDocumentation));
+router.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(explorerApiDocumentation)
+);
 router.use('/mempool-explorer', explorer);
 router.use('/*', (_, res) => res.send(notFound.code, notFound));
 

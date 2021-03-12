@@ -3,12 +3,11 @@
  */
 const { ApiPromise } = require('@polkadot/api');
 const { Keyring } = require('@polkadot/keyring');
-const { cryptoWaitReady } = require('@polkadot/util-crypto') ;
+const { cryptoWaitReady } = require('@polkadot/util-crypto');
 
 const BOB = '5GxDBrTuFgCAN49xrpRFWJiA969R2Ny5NnTa8cSPBh8hWHY9';
 
-async function main () {    
-
+async function main() {
   await cryptoWaitReady();
   // Instantiate the API
   const api = await ApiPromise.create();
@@ -21,7 +20,7 @@ async function main () {
 
   // Create a extrinsic, transferring 12345 units to Bob
   const transfer = api.tx.balances.transfer(BOB, 12);
-  
+
   // retrieve sender's next index/nonce, taking txs in the pool into account
   const nonce = await api.rpc.system.accountNextIndex(alice.address);
 
@@ -32,4 +31,6 @@ async function main () {
   console.log('Transfer sent with hash', hash.toHex());
 }
 
-main().catch(console.error).finally(() => process.exit());
+main()
+  .catch(console.error)
+  .finally(() => process.exit());

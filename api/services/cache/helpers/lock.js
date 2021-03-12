@@ -2,7 +2,7 @@
  * Module dependencies
  */
 const { EventEmitter } = require('events');
-const logger = require('../../logger');
+const logger = require('../../../logger');
 
 /**
  * Expose Local Lock
@@ -13,7 +13,7 @@ module.exports = () => {
   eventEmitter.setMaxListeners(0);
 
   return {
-    acquire: (key) => (
+    acquire: (key) =>
       // eslint-disable-next-line consistent-return
       new Promise((resolve) => {
         // If nobody has the lock, take it and resolve immediately
@@ -37,8 +37,7 @@ module.exports = () => {
         };
 
         eventEmitter.on(key, tryAcquire);
-      })
-    ),
+      }),
     // If we pass a value, on release this value
     // will be propagated to all the code that's waiting for
     // the lock to release

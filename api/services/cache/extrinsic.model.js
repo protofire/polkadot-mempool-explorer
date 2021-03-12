@@ -84,8 +84,8 @@ class ExtrinsicModel {
     this.createAt = createAt || this.createAt;
     this.updateAt = updateAt || this.updateAt;
     this.tokenSymbol = tokenSymbol || this.tokenSymbol;
-    this.era = { ...this.era, ...era || {} };
-    this.block = { ...this.block, ...block || {} };
+    this.era = { ...this.era, ...(era || {}) };
+    this.block = { ...this.block, ...(block || {}) };
   }
 
   /**
