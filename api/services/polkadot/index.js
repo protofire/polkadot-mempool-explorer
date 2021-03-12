@@ -222,15 +222,10 @@ class PolkadotService {
                   }
 
                   extrinsic.args.forEach((arg) => {
-                    switch (arg.toRawType()) {
-                      case 'AccountId':
-                        to = arg.toHuman();
-                        break;
-                      case 'Compact<Balance>':
-                        [value, symbol] = arg.toHuman().split(' ');
-                        break;
-                      default:
-                        break;
+                    if (arg.toRawType().includes('AccountId')) {
+                      to = arg.toString();
+                    } else if (arg.toRawType().includes('Compact<Balance>')) {
+                      [value, symbol] = arg.toHuman().split(' ');
                     }
                   });
 
