@@ -33,6 +33,10 @@ Open [localhost:8081/api/v1/api-docs](http://localhost:8084/api/v1/api-docs) to 
 
 The service will reload if you make edits.
 
+### `npm run test`
+
+Running the unit tests.
+
 ## Mempool Explorer API Definition
 
 <p align="center"><img src="../assets/swagger.png"/></p>
